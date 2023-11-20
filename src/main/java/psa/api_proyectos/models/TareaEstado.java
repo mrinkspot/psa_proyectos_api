@@ -16,11 +16,15 @@ public class TareaEstado {
         this.descripcion = descripcion;
     }
 
-    public static final long NUEVA_IDM = 1;
-    public static final long EN_CURSO_IDM = 2;
-    public static final long TERMINADA_IDM = 3;
-    public static final long EN_ESPERA_IDM = 4;
-
+    // TODO: 20231120 - CB - Revisar si existe una definición de los estados de Tarea
+    public static long NUEVA_IDM = 1;
+    public static long EN_CURSO_IDM = 2;
+    public static long TERMINADA_IDM = 3;
+    public static long EN_ESPERA_IDM = 4;
+    public static String NUEVA_DESCRIPCION = "Nueva";
+    public static String EN_CURSO_DESCRIPCION = "En curso";
+    public static String TERMINADA_DESCRIPCION = "Terminada";
+    public static String EN_ESPERA_DESCRIPCION = "En espera";
     public TareaEstado() {
     }
 }
