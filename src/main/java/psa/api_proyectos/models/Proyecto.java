@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Date;
 @Table(name = "Proyectos")
 @Entity
-public class ProyectoModel {
+public class Proyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -14,6 +14,8 @@ public class ProyectoModel {
     private String descripcion;
     private Date fechaInicio;
     private Date fechaFin;
+    @ManyToOne
+    private ProyectoEstado Estado;
 
     public String getNombre() {
         return nombre;
