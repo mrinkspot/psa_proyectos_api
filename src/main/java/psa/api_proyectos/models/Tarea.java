@@ -18,8 +18,8 @@ public class Tarea {
     public Date fechaInicio;
     public Date fechaFin;
     @ManyToOne
-    public Proyecto Proyecto;
+    public Proyecto proyecto;
 
     @ManyToOne
-    public TareaEstado Estado;
+    public TareaEstado estado;
 }
