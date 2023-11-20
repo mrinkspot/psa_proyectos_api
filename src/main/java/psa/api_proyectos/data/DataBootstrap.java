@@ -18,7 +18,6 @@ public class DataBootstrap implements CommandLineRunner {
 
     @Override
     public void run(String...args) {
-
         proyectoEstadoRepository.save(new ProyectoEstado(ProyectoEstado.NO_INICIADO_IDM, ProyectoEstado.NO_INICIADO_DESCRIPCION));
         proyectoEstadoRepository.save(new ProyectoEstado(ProyectoEstado.EN_PROGRESO_IDM, ProyectoEstado.EN_PROGRESO_DESCRIPCION));
         proyectoEstadoRepository.save(new ProyectoEstado(ProyectoEstado.TERMINADO_IDM, ProyectoEstado.TERMINADO_DESCRIPCION));

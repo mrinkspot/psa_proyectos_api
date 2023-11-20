@@ -1,7 +1,9 @@
 package psa.api_proyectos.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import psa.api_proyectos.dtos.ProyectoDto;
 import psa.api_proyectos.models.Proyecto;
 import psa.api_proyectos.models.Tarea;
 import psa.api_proyectos.services.ProyectoService;
@@ -9,6 +11,7 @@ import psa.api_proyectos.services.ProyectoService;
 import java.util.ArrayList;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/proyecto")
 public class ProyectoController {
     @Autowired
@@ -25,7 +28,8 @@ public class ProyectoController {
     }
 
     @PostMapping()
-    public Proyecto saveProyecto(@RequestBody Proyecto proyecto) {
-        return proyectoService.saveProyecto(proyecto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Proyecto saveProyecto(@RequestBody ProyectoDto request) {
+        return proyectoService.saveProyecto(request);
     }
 }

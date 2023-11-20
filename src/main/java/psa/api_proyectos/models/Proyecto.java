@@ -15,7 +15,7 @@ public class Proyecto {
     private Date fechaInicio;
     private Date fechaFin;
     @ManyToOne
-    private ProyectoEstado Estado;
+    private ProyectoEstado estado;
 
     public String getNombre() {
         return nombre;
@@ -47,5 +47,17 @@ public class Proyecto {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public ProyectoEstado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(ProyectoEstado estado) {
+        this.estado = estado;
+    }
+
+    public long getId() {
+        return id;
     }
 }

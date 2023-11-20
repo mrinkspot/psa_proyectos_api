@@ -8,8 +8,8 @@ import jakarta.persistence.Table;
 @Table(name = "ProyectoEstados")
 public class ProyectoEstado {
     @Id
-    private long idm;
-    private String descripcion;
+    public long idm;
+    public String descripcion;
 
     public ProyectoEstado(long idm, String descripcion) {
         this.idm = idm;
