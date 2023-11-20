@@ -2,7 +2,7 @@ package psa.api_proyectos.models;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.sql.Date;
 @Table(name = "Proyectos")
 @Entity
 public class ProyectoModel {
