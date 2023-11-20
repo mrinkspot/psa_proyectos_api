@@ -25,6 +25,7 @@ public class ProyectoService {
     }
 
     public Proyecto saveProyecto(Proyecto proyecto) {
+        // Faltan reglas de negocio y hacer el save si todo está ok, sino lanzar excepción
         return proyectoRepository.save(proyecto);
     }
 }
