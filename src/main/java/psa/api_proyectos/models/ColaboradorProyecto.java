@@ -1,14 +1,12 @@
 package psa.api_proyectos.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ColaboradorProyectos")
 public class ColaboradorProyecto {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
     @ManyToOne
     public Proyecto proyecto;
