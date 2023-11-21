@@ -1,13 +1,11 @@
 package psa.api_proyectos.services;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import psa.api_proyectos.dtos.ProyectoDto;
 import psa.api_proyectos.exceptions.ProyectoInvalidoException;
-import psa.api_proyectos.models.Proyecto;
-import psa.api_proyectos.models.ProyectoEstado;
-import psa.api_proyectos.models.Tarea;
+import psa.api_proyectos.models.*;
+import psa.api_proyectos.repositories.ColaboradorProyectoRepository;
 import psa.api_proyectos.repositories.ProyectoEstadoRepository;
 import psa.api_proyectos.repositories.ProyectoRepository;
 import psa.api_proyectos.repositories.TareaRepository;
@@ -23,6 +21,10 @@ public class ProyectoService {
     private ProyectoEstadoRepository proyectoEstadoRepository;
     @Autowired
     private TareaRepository tareaRepository;
+    @Autowired
+    private ColaboradorService colaboradorService;
+    @Autowired
+    private ColaboradorProyectoRepository colaboradorProyectoRepository;
 
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
@@ -31,7 +33,6 @@ public class ProyectoService {
     public ArrayList<Proyecto> getProyectos() {
         return (ArrayList<Proyecto>) proyectoRepository.findAll();
     }
-    @Transactional
     public Proyecto saveProyecto(ProyectoDto dto) {
         if (dto.getNombre().isEmpty()) {
             throw new ProyectoInvalidoException("'Nombre' es obligatorio");
@@ -64,7 +65,19 @@ public class ProyectoService {
         proyecto.setFechaFin(dto.getFechaFin());
         proyecto.setEstado(estado);
 
-        return proyectoRepository.save(proyecto);
+        ArrayList<ColaboradorProyecto> colaboradoresProyecto = new ArrayList<>();
+
+        for (Long liderId : dto.getLideresIds()) {
+            colaboradoresProyecto.add(colaboradorService.createLiderProyecto(liderId, proyecto));
+        }
+        for (Long miembroId : dto.getMiembrosIds()) {
+            colaboradoresProyecto.add(colaboradorService.createMiembroProyecto(miembroId, proyecto));
+        }
+
+        proyectoRepository.save(proyecto);
+        colaboradorProyectoRepository.saveAll(colaboradoresProyecto);
+
+        return proyecto;
     }
 
     public ProyectoEstado getProyectoEstadoByIdm(long estadoIdm) {
