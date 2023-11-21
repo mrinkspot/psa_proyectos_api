@@ -3,6 +3,7 @@ package psa.api_proyectos.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import psa.api_proyectos.dtos.ProyectoDto;
+import psa.api_proyectos.exceptions.NoExistenProyectosException;
 import psa.api_proyectos.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.models.*;
 import psa.api_proyectos.repositories.ColaboradorProyectoRepository;
@@ -31,8 +32,11 @@ public class ProyectoService {
     }
 
     public ArrayList<Proyecto> getProyectos() {
-        return (ArrayList<Proyecto>) proyectoRepository.findAll();
+        ArrayList<Proyecto> proyectos = (ArrayList<Proyecto>) proyectoRepository.findAll();
+        if (proyectos.isEmpty()) throw new NoExistenProyectosException("No existen proyectos");
+        return proyectos;
     }
+
     public Proyecto saveProyecto(ProyectoDto dto) {
         if (dto.getNombre().isEmpty()) {
             throw new ProyectoInvalidoException("'Nombre' es obligatorio");
