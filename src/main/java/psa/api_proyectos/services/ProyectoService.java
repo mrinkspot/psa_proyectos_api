@@ -1,5 +1,6 @@
 package psa.api_proyectos.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import psa.api_proyectos.dtos.ProyectoDto;
@@ -12,6 +13,8 @@ import psa.api_proyectos.repositories.ProyectoRepository;
 import psa.api_proyectos.repositories.TareaRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,27 +41,26 @@ public class ProyectoService {
     }
 
     public Proyecto saveProyecto(ProyectoDto dto) {
-        if (dto.getNombre().isEmpty()) {
-            throw new ProyectoInvalidoException("'Nombre' es obligatorio");
+        HashMap<String, String> errores = new HashMap();
+
+        if (dto.getNombre() == null) {
+            errores.put("nombre", "'Nombre' es obligatorio");
         }
-        if (dto.getDescripcion().isEmpty()) {
-            throw new ProyectoInvalidoException("'Descripcion' es obligatorio");
+        if (dto.getDescripcion() == null) {
+            errores.put("descripcion", "'Descripcion' es obligatorio");
         }
         if (dto.getEstadoIdm() == null) {
-            throw new ProyectoInvalidoException("'Estado' es obligatorio");
+            errores.put("estado", "'Estado' es obligatorio");
         }
-//        if (dto.getFechaInicio() == null) {
-//            throw new ProyectoInvalidoException("'Fecha de Inicio' es obligatorio");
-//        }
-//        if (dto.getFechaFin() == null) {
-//            throw new ProyectoInvalidoException("'Fecha de Fin' es obligatorio");
-//        }
 
         // Por el momento se considera que fechaInicio y fechaFin no son obligatorios
         if (dto.getFechaInicio() != null && dto.getFechaFin() != null && dto.getFechaInicio().after(dto.getFechaFin())) {
-            throw new ProyectoInvalidoException("'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
+            errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
         }
 
+        if (!errores.isEmpty()) {
+            throw new ProyectoInvalidoException(errores);
+        }
 //        Buscamos el estado seleccionado
         ProyectoEstado estado = this.getProyectoEstadoByIdm(dto.getEstadoIdm());
 

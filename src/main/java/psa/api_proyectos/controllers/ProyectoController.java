@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.dtos.ProyectoDto;
 import psa.api_proyectos.exceptions.NoExistenProyectosException;
+import psa.api_proyectos.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.models.Proyecto;
 import psa.api_proyectos.models.Tarea;
 import psa.api_proyectos.exceptions.ErrorMessage;
 import psa.api_proyectos.services.ProyectoService;
-
 import java.util.ArrayList;
 
 @RestController
@@ -37,7 +37,12 @@ public class ProyectoController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Proyecto saveProyecto(@RequestBody ProyectoDto request) {
-        return proyectoService.saveProyecto(request);
+    public ResponseEntity<?> saveProyecto(@RequestBody ProyectoDto request) {
+        try {
+            Proyecto proyecto = proyectoService.saveProyecto(request);
+            return new ResponseEntity<>(proyecto, HttpStatus.OK);
+        } catch (ProyectoInvalidoException e) {
+            return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
