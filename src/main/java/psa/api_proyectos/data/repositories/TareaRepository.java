@@ -1,9 +1,8 @@
-package psa.api_proyectos.repositories;
+package psa.api_proyectos.data.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import psa.api_proyectos.models.Proyecto;
-import psa.api_proyectos.models.Tarea;
+import psa.api_proyectos.domain.models.Tarea;
 
 import java.util.Collection;
 

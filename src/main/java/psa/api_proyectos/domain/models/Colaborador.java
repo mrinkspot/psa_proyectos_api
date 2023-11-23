@@ -1,4 +1,4 @@
-package psa.api_proyectos.models;
+package psa.api_proyectos.domain.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

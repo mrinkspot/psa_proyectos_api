@@ -1,14 +1,14 @@
-package psa.api_proyectos.services;
+package psa.api_proyectos.application.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import psa.api_proyectos.models.Colaborador;
-import psa.api_proyectos.models.ColaboradorProyecto;
-import psa.api_proyectos.models.ColaboradorProyectoRol;
-import psa.api_proyectos.models.Proyecto;
-import psa.api_proyectos.repositories.ColaboradorProyectoRepository;
-import psa.api_proyectos.repositories.ColaboradorRepository;
-import psa.api_proyectos.repositories.ProyectoRepository;
+import psa.api_proyectos.domain.models.Colaborador;
+import psa.api_proyectos.domain.models.ColaboradorProyecto;
+import psa.api_proyectos.domain.enums.ColaboradorProyectoRol;
+import psa.api_proyectos.domain.models.Proyecto;
+import psa.api_proyectos.data.repositories.ColaboradorProyectoRepository;
+import psa.api_proyectos.data.repositories.ColaboradorRepository;
+import psa.api_proyectos.data.repositories.ProyectoRepository;
 
 @Service
 public class ColaboradorService {

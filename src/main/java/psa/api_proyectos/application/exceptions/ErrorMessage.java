@@ -1,4 +1,4 @@
-package psa.api_proyectos.exceptions;
+package psa.api_proyectos.application.exceptions;
 
 public class ErrorMessage {
     private String message;

@@ -1,11 +1,10 @@
-package psa.api_proyectos.dtos;
+package psa.api_proyectos.application.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Getter
 @Setter

@@ -1,9 +1,6 @@
-package psa.api_proyectos.models;
+package psa.api_proyectos.domain.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 
@@ -11,12 +8,14 @@ import java.sql.Date;
 @Table(name = "Tareas")
 public class Tarea {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
     public long id;
-
     public String descripcion;
 
     public Date fechaInicio;
     public Date fechaFin;
+
     @ManyToOne
     public Proyecto proyecto;
 

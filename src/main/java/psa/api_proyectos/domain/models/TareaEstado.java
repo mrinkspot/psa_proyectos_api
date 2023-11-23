@@ -1,4 +1,4 @@
-package psa.api_proyectos.models;
+package psa.api_proyectos.domain.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,8 +8,8 @@ import jakarta.persistence.Table;
 @Table(name = "TareaEstados")
 public class TareaEstado {
     @Id
-    private long idm;
-    private String descripcion;
+    public long idm;
+    public String descripcion;
 
     public TareaEstado(long idm, String descripcion) {
         this.idm = idm;

@@ -1,18 +1,19 @@
-package psa.api_proyectos.exceptions;
+package psa.api_proyectos.application.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import java.util.HashMap;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class ProyectoInvalidoException extends RuntimeException {
-    private HashMap<String, String> errores = new HashMap<>();
+public class BaseException extends RuntimeException {
+    protected HashMap<String, String> errores = new HashMap<>();
 
-    public ProyectoInvalidoException(String mensaje) {
+    public BaseException(String mensaje) {
         super(mensaje);
     }
 
-    public ProyectoInvalidoException(HashMap<String, String> errores) {
+    public BaseException(HashMap<String, String> errores) {
         super("Errores");
         this.errores = errores;
     }

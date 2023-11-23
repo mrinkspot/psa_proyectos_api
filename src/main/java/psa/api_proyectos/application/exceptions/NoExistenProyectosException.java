@@ -1,4 +1,4 @@
-package psa.api_proyectos.exceptions;
+package psa.api_proyectos.application.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,4 +1,4 @@
-package psa.api_proyectos.models;
+package psa.api_proyectos.domain.enums;
 
 public enum ColaboradorProyectoRol {
     LIDER("Líder de Proyecto"),

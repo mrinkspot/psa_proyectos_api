@@ -1,7 +1,7 @@
-package psa.api_proyectos.repositories;
+package psa.api_proyectos.data.repositories;
 
 import org.springframework.data.repository.CrudRepository;
-import psa.api_proyectos.models.Colaborador;
+import psa.api_proyectos.domain.models.Colaborador;
 
 public interface ColaboradorRepository extends CrudRepository<Colaborador, Long> {
 

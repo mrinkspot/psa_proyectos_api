@@ -8,8 +8,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import psa.api_proyectos.models.Proyecto;
-import psa.api_proyectos.repositories.ProyectoRepository;
+import psa.api_proyectos.domain.models.Proyecto;
+import psa.api_proyectos.data.repositories.ProyectoRepository;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

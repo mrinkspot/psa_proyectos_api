@@ -3,10 +3,10 @@ package psa.api_proyectos.data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import psa.api_proyectos.models.ProyectoEstado;
-import psa.api_proyectos.models.TareaEstado;
-import psa.api_proyectos.repositories.ProyectoEstadoRepository;
-import psa.api_proyectos.repositories.TareaEstadoRepository;
+import psa.api_proyectos.domain.models.ProyectoEstado;
+import psa.api_proyectos.domain.models.TareaEstado;
+import psa.api_proyectos.data.repositories.ProyectoEstadoRepository;
+import psa.api_proyectos.data.repositories.TareaEstadoRepository;
 
 @Component
 public class DataBootstrap implements CommandLineRunner {

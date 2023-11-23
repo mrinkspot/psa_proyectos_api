@@ -1,20 +1,17 @@
-package psa.api_proyectos.services;
+package psa.api_proyectos.application.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import psa.api_proyectos.dtos.ProyectoDto;
-import psa.api_proyectos.exceptions.NoExistenProyectosException;
-import psa.api_proyectos.exceptions.ProyectoInvalidoException;
-import psa.api_proyectos.models.*;
-import psa.api_proyectos.repositories.ColaboradorProyectoRepository;
-import psa.api_proyectos.repositories.ProyectoEstadoRepository;
-import psa.api_proyectos.repositories.ProyectoRepository;
-import psa.api_proyectos.repositories.TareaRepository;
+import psa.api_proyectos.application.dtos.ProyectoDto;
+import psa.api_proyectos.application.dtos.TareaDto;
+import psa.api_proyectos.application.exceptions.NoExistenProyectosException;
+import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
+import psa.api_proyectos.application.exceptions.TareaInvalidaException;
+import psa.api_proyectos.data.repositories.*;
+import psa.api_proyectos.domain.models.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -24,6 +21,8 @@ public class ProyectoService {
     private ProyectoRepository proyectoRepository;
     @Autowired
     private ProyectoEstadoRepository proyectoEstadoRepository;
+    @Autowired
+    private TareaEstadoRepository tareaEstadoRepository;
     @Autowired
     private TareaRepository tareaRepository;
     @Autowired
@@ -42,7 +41,7 @@ public class ProyectoService {
     }
 
     public Proyecto saveProyecto(ProyectoDto dto) {
-        HashMap<String, String> errores = new HashMap();
+        HashMap<String, String> errores = new HashMap<>();
 
         if (dto.getNombre() == null) {
             errores.put("nombre", "'Nombre' es obligatorio");
@@ -89,6 +88,50 @@ public class ProyectoService {
 
     public ProyectoEstado getProyectoEstadoByIdm(long estadoIdm) {
         Optional<ProyectoEstado> estadoOptional = proyectoEstadoRepository.findById(estadoIdm);
+        return estadoOptional.orElse(null);
+    }
+
+    public Tarea saveTarea(TareaDto dto, Long proyectoId) {
+        HashMap<String, String> errores = new HashMap<>();
+
+        if (dto.getDescripcion() == null) {
+            errores.put("descripcion", "'Descripcion' es obligatorio");
+        }
+        if (dto.getEstadoIdm() == null) {
+            errores.put("estado", "'Estado' es obligatorio");
+        }
+
+        // Por el momento se considera que fechaInicio y fechaFin no son obligatorios
+        if (dto.getFechaInicio() != null && dto.getFechaFin() != null && dto.getFechaInicio().after(dto.getFechaFin())) {
+            errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
+        }
+
+        if (!errores.isEmpty()) {
+            throw new TareaInvalidaException(errores);
+        }
+//        Buscamos el estado seleccionado
+        TareaEstado estado = this.getTareaEstadoByIdm(dto.getEstadoIdm());
+
+        Proyecto proyecto = this.getProyectoById(proyectoId);
+
+        Tarea nuevaTarea = new Tarea();
+        nuevaTarea.descripcion = dto.getDescripcion();
+        nuevaTarea.estado = estado;
+        nuevaTarea.proyecto = proyecto;
+        nuevaTarea.fechaInicio = dto.getFechaInicio();
+        nuevaTarea.fechaFin = dto.getFechaFin();
+
+        tareaRepository.save(nuevaTarea);
+
+        return nuevaTarea;
+    }
+
+    private Proyecto getProyectoById(Long proyectoId) {
+        return proyectoRepository.findById(proyectoId).orElse(null);
+    }
+
+    private TareaEstado getTareaEstadoByIdm(Long estadoIdm) {
+        Optional<TareaEstado> estadoOptional = tareaEstadoRepository.findById(estadoIdm);
         return estadoOptional.orElse(null);
     }
 }

@@ -1,16 +1,17 @@
-package psa.api_proyectos.controllers;
+package psa.api_proyectos.web.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import psa.api_proyectos.dtos.ProyectoDto;
-import psa.api_proyectos.exceptions.NoExistenProyectosException;
-import psa.api_proyectos.exceptions.ProyectoInvalidoException;
-import psa.api_proyectos.models.Proyecto;
-import psa.api_proyectos.models.Tarea;
-import psa.api_proyectos.exceptions.ErrorMessage;
-import psa.api_proyectos.services.ProyectoService;
+import psa.api_proyectos.application.dtos.ProyectoDto;
+import psa.api_proyectos.application.dtos.TareaDto;
+import psa.api_proyectos.application.exceptions.NoExistenProyectosException;
+import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
+import psa.api_proyectos.domain.models.Proyecto;
+import psa.api_proyectos.domain.models.Tarea;
+import psa.api_proyectos.application.exceptions.ErrorMessage;
+import psa.api_proyectos.application.services.ProyectoService;
 import java.util.ArrayList;
 
 @RestController
@@ -41,6 +42,17 @@ public class ProyectoController {
         try {
             Proyecto proyecto = proyectoService.saveProyecto(request);
             return new ResponseEntity<>(proyecto, HttpStatus.OK);
+        } catch (ProyectoInvalidoException e) {
+            return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{proyectoId}/tarea")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> saveTarea(@RequestBody TareaDto request, @PathVariable Long proyectoId) {
+        try {
+            Tarea tarea = proyectoService.saveTarea(request, proyectoId);
+            return new ResponseEntity<>(tarea, HttpStatus.OK);
         } catch (ProyectoInvalidoException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
         }
