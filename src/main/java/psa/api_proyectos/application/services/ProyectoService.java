@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
+import psa.api_proyectos.application.exceptions.NoExisteElProyectoPedidoException;
 import psa.api_proyectos.application.exceptions.NoExistenProyectosException;
 import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.application.exceptions.TareaInvalidaException;
@@ -73,9 +74,8 @@ public class ProyectoService {
 
         ArrayList<ColaboradorProyecto> colaboradoresProyecto = new ArrayList<>();
 
-        for (Long liderId : dto.getLideresIds()) {
-            colaboradoresProyecto.add(colaboradorService.createLiderProyecto(liderId, proyecto));
-        }
+        colaboradoresProyecto.add(colaboradorService.createLiderProyecto(dto.getLiderId(), proyecto));
+
         for (Long miembroId : dto.getMiembrosIds()) {
             colaboradoresProyecto.add(colaboradorService.createMiembroProyecto(miembroId, proyecto));
         }
@@ -126,8 +126,12 @@ public class ProyectoService {
         return nuevaTarea;
     }
 
-    private Proyecto getProyectoById(Long proyectoId) {
-        return proyectoRepository.findById(proyectoId).orElse(null);
+    public Proyecto getProyectoById(Long proyectoId) {
+        Proyecto proyectoADevolver = proyectoRepository.findById(proyectoId).orElse(null);
+        if (proyectoADevolver == null) {
+            throw new NoExisteElProyectoPedidoException("No existe el proyecto de Id: " + proyectoId + ".");
+        }
+        return proyectoADevolver;
     }
 
     private TareaEstado getTareaEstadoByIdm(Long estadoIdm) {

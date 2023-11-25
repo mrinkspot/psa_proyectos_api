@@ -14,6 +14,6 @@ public class ProyectoDto {
     private Date fechaInicio;
     private Date fechaFin;
     private Long estadoIdm;
-    private ArrayList<Long> lideresIds;
+    private Long liderId;
     private ArrayList<Long> miembrosIds;
 }
