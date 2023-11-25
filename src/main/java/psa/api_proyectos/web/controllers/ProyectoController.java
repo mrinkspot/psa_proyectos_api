@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
+import psa.api_proyectos.application.exceptions.NoExisteElProyectoPedidoException;
 import psa.api_proyectos.application.exceptions.NoExistenProyectosException;
 import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.domain.models.Proyecto;
@@ -27,6 +28,16 @@ public class ProyectoController {
             ArrayList<Proyecto> proyectos = proyectoService.getProyectos();
             return new ResponseEntity<>(proyectos, HttpStatus.OK);
         } catch (NoExistenProyectosException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{proyectoId}")
+    public ResponseEntity<?> getProyectoById(@PathVariable Long proyectoId) {
+        try {
+            Proyecto proyecto = proyectoService.getProyectoById(proyectoId);
+            return new ResponseEntity<>(proyecto, HttpStatus.OK);
+        } catch (NoExisteElProyectoPedidoException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
