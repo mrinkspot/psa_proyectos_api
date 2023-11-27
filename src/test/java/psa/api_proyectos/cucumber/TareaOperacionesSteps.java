@@ -55,7 +55,6 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
             proyectoDto.setNombre("a");
             proyectoDto.setDescripcion("a");
             proyectoDto.setEstadoIdm(ProyectoEstado.NO_INICIADO_IDM);
-            proyectoDto.setMiembrosIds(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L)));
             proyectoDto.setLiderId(1L);
             proyectoId = proyectoService.saveProyecto(proyectoDto).getId();
         }

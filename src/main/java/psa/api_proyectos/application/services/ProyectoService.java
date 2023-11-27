@@ -26,8 +26,6 @@ public class ProyectoService {
     private TareaEstadoRepository tareaEstadoRepository;
     @Autowired
     private TareaRepository tareaRepository;
-    @Autowired
-    private ColaboradorProyectoRepository colaboradorProyectoRepository;
 
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
@@ -39,7 +37,7 @@ public class ProyectoService {
         return proyectos;
     }
 
-    public Proyecto saveProyecto(ProyectoDto dto) {
+    private void validacionDeProyecto(ProyectoDto dto) {
         HashMap<String, String> errores = new HashMap<>();
 
         if (dto.getNombre() == null) {
@@ -60,29 +58,14 @@ public class ProyectoService {
         if (!errores.isEmpty()) {
             throw new ProyectoInvalidoException(errores);
         }
-//        Buscamos el estado seleccionado
-        ProyectoEstado estado = this.getProyectoEstadoByIdm(dto.getEstadoIdm());
+    }
+
+    public Proyecto saveProyecto(ProyectoDto dto) {
+        validacionDeProyecto(dto);
 
         Proyecto proyecto = new Proyecto();
-        proyecto.setNombre(dto.getNombre());
-        proyecto.setDescripcion(dto.getDescripcion());
-        proyecto.setFechaInicio(dto.getFechaInicio());
-        proyecto.setFechaFin(dto.getFechaFin());
-        proyecto.setEstado(estado);
-
-        proyecto.setLiderAsignadoId(dto.getLiderId());
-
-        ArrayList<ColaboradorProyecto> colaboradoresProyecto = new ArrayList<>();
-
-        for (Long miembroId : dto.getMiembrosIds()) {
-            ColaboradorProyecto colaboradorProyecto = new ColaboradorProyecto();
-            colaboradorProyecto.proyecto = proyecto;
-            colaboradorProyecto.legajoId = miembroId;
-            colaboradoresProyecto.add(colaboradorProyecto);
-        }
-
+        proyecto = mapProyectoDtoToProyecto(proyecto, dto);
         proyectoRepository.save(proyecto);
-        colaboradorProyectoRepository.saveAll(colaboradoresProyecto);
 
         return proyecto;
     }
@@ -134,8 +117,33 @@ public class ProyectoService {
         }
         return proyectoADevolver;
     }
+
+    public boolean existsProyecto(Long proyectoId) {
+        return (proyectoRepository.findById(proyectoId).orElse(null) != null);
+    }
+
+    public void modifyProyecto(ProyectoDto dto, Long proyectoId) {
+        validacionDeProyecto(dto);
+
+        Proyecto proyecto = getProyectoById(proyectoId);
+        proyecto = mapProyectoDtoToProyecto(proyecto, dto);
+        proyectoRepository.save(proyecto);
+    }
+
     private TareaEstado getTareaEstadoByIdm(Long estadoIdm) {
         Optional<TareaEstado> estadoOptional = tareaEstadoRepository.findById(estadoIdm);
         return estadoOptional.orElse(null);
+    }
+
+    private Proyecto mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoDto dto) {
+        proyecto.setNombre(dto.getNombre());
+        proyecto.setDescripcion(dto.getDescripcion());
+        proyecto.setFechaInicio(dto.getFechaInicio());
+        proyecto.setFechaFin(dto.getFechaFin());
+        ProyectoEstado estado = this.getProyectoEstadoByIdm(dto.getEstadoIdm());
+        proyecto.setEstado(estado);
+        proyecto.setLiderAsignadoId(dto.getLiderId());
+
+        return proyecto;
     }
 }

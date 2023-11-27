@@ -67,4 +67,8 @@ public class Proyecto {
     public void setLiderAsignadoId(Long liderAsignadoId) {
         this.liderAsignadoId = liderAsignadoId;
     }
+
+    public Long getLiderAsignadoId() {
+        return liderAsignadoId;
+    }
 }

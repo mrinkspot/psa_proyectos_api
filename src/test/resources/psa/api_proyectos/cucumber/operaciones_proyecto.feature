@@ -24,3 +24,8 @@ Feature: Operaciones de proyectos
   Scenario: Creación incorrecta de un proyecto por poner una fecha final anterior a la fecha de inicio
     When se intenta crear un proyecto con una fecha final anterior a su fecha de inicio
     Then El proyecto no es creado, y se informa del error
+
+  Scenario: Modificacion correcta del nombre de un proyecto
+    Given Existe un proyecto y se conoce su Id
+    When Este se le intentan modifica su nombre con un nombre valido
+    Then El proyecto se actualiza y ahora tiene su nombre modificado

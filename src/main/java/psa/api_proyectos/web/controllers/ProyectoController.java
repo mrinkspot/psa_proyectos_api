@@ -68,4 +68,17 @@ public class ProyectoController {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/{proyectoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<?> modifyProyecto(@RequestBody ProyectoDto request, @PathVariable Long proyectoId) {
+        if (proyectoService.existsProyecto(proyectoId)){ return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+
+        try {
+            proyectoService.modifyProyecto(request, proyectoId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ProyectoInvalidoException e) {
+            return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
