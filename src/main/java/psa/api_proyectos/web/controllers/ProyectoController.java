@@ -6,12 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
-import psa.api_proyectos.application.exceptions.NoExisteElProyectoPedidoException;
-import psa.api_proyectos.application.exceptions.NoExistenProyectosException;
-import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
+import psa.api_proyectos.application.exceptions.*;
 import psa.api_proyectos.domain.models.Proyecto;
 import psa.api_proyectos.domain.models.Tarea;
-import psa.api_proyectos.application.exceptions.ErrorMessage;
 import psa.api_proyectos.application.services.ProyectoService;
 import java.util.ArrayList;
 
@@ -64,7 +61,7 @@ public class ProyectoController {
         try {
             Tarea tarea = proyectoService.saveTarea(request, proyectoId);
             return new ResponseEntity<>(tarea, HttpStatus.OK);
-        } catch (ProyectoInvalidoException e) {
+        } catch (TareaInvalidaException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
         }
     }

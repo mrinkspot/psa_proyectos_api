@@ -37,17 +37,23 @@ public class ProyectoService {
         return proyectos;
     }
 
-    private void validacionDeProyecto(ProyectoDto dto) {
+    private void validarDatosProyecto(ProyectoDto dto) {
         HashMap<String, String> errores = new HashMap<>();
 
         if (dto.getNombre() == null) {
             errores.put("nombre", "'Nombre' es obligatorio");
+        } else if (dto.getNombre().length() > 50) {
+            errores.put("nombre", "'Nombre' debe tener menos de 50 caracteres");
         }
         if (dto.getDescripcion() == null) {
             errores.put("descripcion", "'Descripcion' es obligatorio");
+        } else if (dto.getDescripcion().length() > 1000) {
+            errores.put("descripcion", "'Descripcion' debe tener menos de 1000 caracteres");
         }
         if (dto.getEstadoIdm() == null) {
             errores.put("estado", "'Estado' es obligatorio");
+        } else {
+            if (!proyectoEstadoRepository.existsById(dto.getEstadoIdm())) errores.put("estado", "No existe un 'Estado' de Proyecto con Idm " + dto.getEstadoIdm());
         }
 
         // Por el momento se considera que fechaInicio y fechaFin no son obligatorios
@@ -61,7 +67,7 @@ public class ProyectoService {
     }
 
     public Proyecto saveProyecto(ProyectoDto dto) {
-        validacionDeProyecto(dto);
+        validarDatosProyecto(dto);
 
         Proyecto proyecto = new Proyecto();
         proyecto = mapProyectoDtoToProyecto(proyecto, dto);
@@ -75,14 +81,21 @@ public class ProyectoService {
         return estadoOptional.orElse(null);
     }
 
-    public Tarea saveTarea(TareaDto dto, Long proyectoId) {
+    private void validarDatosTarea(TareaDto dto, Long proyectoId) {
         HashMap<String, String> errores = new HashMap<>();
 
+        if (!proyectoRepository.existsById(proyectoId))
+            errores.put("proyecto", "No existe un 'Proyecto' con Id " + proyectoId);
         if (dto.getDescripcion() == null) {
             errores.put("descripcion", "'Descripcion' es obligatorio");
+        } else if (dto.getDescripcion().length() > 500) {
+            errores.put("descripcion", "'Descripcion' debe tener menos de 500 caracteres");
         }
         if (dto.getEstadoIdm() == null) {
             errores.put("estado", "'Estado' es obligatorio");
+        } else {
+            if (!tareaEstadoRepository.existsById(dto.getEstadoIdm()))
+                errores.put("estado", "No existe un 'Estado' de Tarea con Idm " + dto.getEstadoIdm());
         }
 
         // Por el momento se considera que fechaInicio y fechaFin no son obligatorios
@@ -93,7 +106,12 @@ public class ProyectoService {
         if (!errores.isEmpty()) {
             throw new TareaInvalidaException(errores);
         }
-//        Buscamos el estado seleccionado
+    }
+
+    public Tarea saveTarea(TareaDto dto, Long proyectoId) {
+        validarDatosTarea(dto, proyectoId);
+
+        // Buscamos el estado seleccionado
         TareaEstado estado = this.getTareaEstadoByIdm(dto.getEstadoIdm());
 
         Proyecto proyecto = this.getProyectoById(proyectoId);
@@ -123,7 +141,7 @@ public class ProyectoService {
     }
 
     public void modifyProyecto(ProyectoDto dto, Long proyectoId) {
-        validacionDeProyecto(dto);
+        validarDatosProyecto(dto);
 
         Proyecto proyecto = getProyectoById(proyectoId);
         proyecto = mapProyectoDtoToProyecto(proyecto, dto);
