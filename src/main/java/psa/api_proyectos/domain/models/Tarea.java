@@ -12,9 +12,9 @@ public class Tarea {
     @Column(unique = true, nullable = false)
     public long id;
     public String descripcion;
-
     public Date fechaInicio;
     public Date fechaFin;
+    public long colaboradorAsignadoId;
 
     @ManyToOne
     public Proyecto proyecto;

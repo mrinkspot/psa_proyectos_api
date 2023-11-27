@@ -10,8 +10,6 @@ public class ColaboradorProyecto {
     public long id;
     @ManyToOne
     public Proyecto proyecto;
-    @ManyToOne
-    public Colaborador colaborador;
-    public String rol;
+    public Long legajoId;
 
 }

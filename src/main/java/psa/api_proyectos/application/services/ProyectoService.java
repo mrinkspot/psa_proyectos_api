@@ -27,8 +27,6 @@ public class ProyectoService {
     @Autowired
     private TareaRepository tareaRepository;
     @Autowired
-    private ColaboradorService colaboradorService;
-    @Autowired
     private ColaboradorProyectoRepository colaboradorProyectoRepository;
 
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
@@ -72,12 +70,15 @@ public class ProyectoService {
         proyecto.setFechaFin(dto.getFechaFin());
         proyecto.setEstado(estado);
 
+        proyecto.setLiderAsignadoId(dto.getLiderId());
+
         ArrayList<ColaboradorProyecto> colaboradoresProyecto = new ArrayList<>();
 
-        colaboradoresProyecto.add(colaboradorService.createLiderProyecto(dto.getLiderId(), proyecto));
-
         for (Long miembroId : dto.getMiembrosIds()) {
-            colaboradoresProyecto.add(colaboradorService.createMiembroProyecto(miembroId, proyecto));
+            ColaboradorProyecto colaboradorProyecto = new ColaboradorProyecto();
+            colaboradorProyecto.proyecto = proyecto;
+            colaboradorProyecto.legajoId = miembroId;
+            colaboradoresProyecto.add(colaboradorProyecto);
         }
 
         proyectoRepository.save(proyecto);
@@ -133,7 +134,6 @@ public class ProyectoService {
         }
         return proyectoADevolver;
     }
-
     private TareaEstado getTareaEstadoByIdm(Long estadoIdm) {
         Optional<TareaEstado> estadoOptional = tareaEstadoRepository.findById(estadoIdm);
         return estadoOptional.orElse(null);

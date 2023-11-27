@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.application.services.ProyectoService;
-import psa.api_proyectos.data.repositories.ColaboradorRepository;
-import psa.api_proyectos.domain.models.Colaborador;
 import psa.api_proyectos.domain.models.ProyectoEstado;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -24,8 +22,6 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
 
     @Autowired
     private ProyectoService proyectoService;
-    @Autowired
-    private ColaboradorRepository colaboradorRepository;
     private ProyectoDto proyectoDto;
     private Long proyectoId;
     private ArrayList<Long> personasId;
@@ -43,12 +39,6 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
 
         if (personasId == null) {
             personasId = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L));
-            for (int i = 0; i < personasId.size(); i++) {
-                Colaborador colaborador = new Colaborador();
-                colaborador.nombre = "colaborador " + i;
-                colaborador.legajo = personasId.get(i);
-                colaboradorRepository.save(colaborador);
-            }
         }
         proyectoDto = new ProyectoDto();
         proyectoDto.setLiderId(personasId.get(0));
@@ -68,9 +58,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
         proyectoDto.setFechaFin(Date.valueOf("2022-12-12"));
 
         //Act
-        proyectoId = (proyectoService.saveProyecto(proyectoDto)).getId();
-
-        assertDoesNotThrow( () -> {});
+        assertDoesNotThrow( () -> {proyectoId = (proyectoService.saveProyecto(proyectoDto)).getId();});
     }
 
     @When("^se intenta crear un proyecto con todos los campos asignados correctamente menos las fechas$")
@@ -81,9 +69,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
         proyectoDto.setEstadoIdm(ProyectoEstado.NO_INICIADO_IDM);
 
         //Act
-        proyectoId = (proyectoService.saveProyecto(proyectoDto)).getId();
-
-        assertDoesNotThrow( () -> {});
+        assertDoesNotThrow( () -> {proyectoId = (proyectoService.saveProyecto(proyectoDto)).getId();});
     }
 
     @When("^se intenta crear un proyecto sin indicar el nombre correctamente$")
