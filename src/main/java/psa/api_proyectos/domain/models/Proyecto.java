@@ -3,6 +3,8 @@ package psa.api_proyectos.domain.models;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
+
 @Table(name = "Proyectos")
 @Entity
 public class Proyecto {
@@ -16,6 +18,7 @@ public class Proyecto {
     private Date fechaFin;
     @ManyToOne
     private ProyectoEstado estado;
+    private Long liderAsignadoId;
 
     public String getNombre() {
         return nombre;
@@ -59,5 +62,13 @@ public class Proyecto {
 
     public long getId() {
         return id;
+    }
+
+    public void setLiderAsignadoId(Long liderAsignadoId) {
+        this.liderAsignadoId = liderAsignadoId;
+    }
+
+    public Long getLiderAsignadoId() {
+        return liderAsignadoId;
     }
 }
