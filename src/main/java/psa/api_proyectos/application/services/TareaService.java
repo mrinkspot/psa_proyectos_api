@@ -2,7 +2,7 @@ package psa.api_proyectos.application.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import psa.api_proyectos.application.exceptions.NoExisteLaTareaPedidaException;
+import psa.api_proyectos.application.exceptions.TareaNoEncontradaException;
 import psa.api_proyectos.data.repositories.TareaEstadoRepository;
 import psa.api_proyectos.domain.models.Tarea;
 import psa.api_proyectos.data.repositories.TareaRepository;
@@ -24,11 +24,15 @@ public class TareaService {
     public Tarea getTareaById(Long tareaId) {
         Tarea tarea = tareaRepository.findById(tareaId).orElse(null);
         if (tarea == null) {
-            throw new NoExisteLaTareaPedidaException("No existe la Tarea de Id: " + tareaId + ".");
+            throw new TareaNoEncontradaException("No existe la Tarea " + tareaId + ".");
         }
         return tarea;
     }
 
+    public void deleteTareaById(Long tareaId) {
+        Tarea tarea = this.getTareaById(tareaId);
+        tareaRepository.delete(tarea);
+    }
     public boolean existsTarea(Long tareaId) {
         return tareaRepository.existsById(tareaId);
     }

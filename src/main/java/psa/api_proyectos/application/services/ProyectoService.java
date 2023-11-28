@@ -129,7 +129,7 @@ public class ProyectoService {
     public Proyecto getProyectoById(Long proyectoId) {
         Proyecto proyectoADevolver = proyectoRepository.findById(proyectoId).orElse(null);
         if (proyectoADevolver == null) {
-            throw new NoExisteElProyectoPedidoException("No existe el proyecto de Id: " + proyectoId + ".");
+            throw new ProyectoNoEncontradoException("No existe el proyecto " + proyectoId + ".");
         }
         return proyectoADevolver;
     }
@@ -174,5 +174,10 @@ public class ProyectoService {
         proyecto.setLiderAsignadoId(dto.getLiderId());
 
         return proyecto;
+    }
+
+    public void deleteProyectoById(Long proyectoId) {
+        Proyecto proyecto = this.getProyectoById(proyectoId);
+        proyectoRepository.delete(proyecto);
     }
 }

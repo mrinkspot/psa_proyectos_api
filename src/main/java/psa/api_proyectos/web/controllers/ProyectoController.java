@@ -37,7 +37,16 @@ public class ProyectoController {
         try {
             Proyecto proyecto = proyectoService.getProyectoById(proyectoId);
             return new ResponseEntity<>(proyecto, HttpStatus.OK);
-        } catch (NoExisteElProyectoPedidoException e) {
+        } catch (ProyectoNoEncontradoException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/{proyectoId}")
+    public ResponseEntity<?> deleteProyectoById(@PathVariable Long proyectoId) {
+        try {
+            proyectoService.deleteProyectoById(proyectoId);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } catch (ProyectoNoEncontradoException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
@@ -45,6 +54,23 @@ public class ProyectoController {
     @GetMapping("/{proyectoId}/tarea")
     public ArrayList<Tarea> getTareasByProyectoId(@PathVariable Long proyectoId) {
         return proyectoService.getTareasByProyectoId(proyectoId);
+    }
+
+    // TODO: ver si es necesario pasar el id de proyecto y qué utilidad podemos darle
+    @GetMapping("/{proyectoId}/tarea/{tareaId}")
+    public Tarea getTareaById(@PathVariable Long tareaId) {
+        return tareaService.getTareaById(tareaId);
+    }
+    // TODO: idem GET, probablemente podamos definir alguna regla de negocio que involucre el estado del proyecto
+    // o de la tarea misma
+    @DeleteMapping("/{proyectoId}/tarea/{tareaId}")
+    public ResponseEntity<?> deleteTareaById(@PathVariable Long proyectoId, @PathVariable Long tareaId) {
+        try {
+            tareaService.deleteTareaById(tareaId);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } catch (TareaNoEncontradaException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping()
