@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
 import psa.api_proyectos.application.exceptions.*;
+import psa.api_proyectos.application.services.TareaService;
 import psa.api_proyectos.domain.models.Proyecto;
 import psa.api_proyectos.domain.models.Tarea;
 import psa.api_proyectos.application.services.ProyectoService;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 public class ProyectoController {
     @Autowired
     ProyectoService proyectoService;
+    @Autowired
+    TareaService tareaService;
 
     @GetMapping()
     public ResponseEntity<?> getProyectos() {
@@ -67,14 +70,28 @@ public class ProyectoController {
     }
 
     @PutMapping("/{proyectoId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> modifyProyecto(@RequestBody ProyectoDto request, @PathVariable Long proyectoId) {
-        if (proyectoService.existsProyecto(proyectoId)){ return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateProyecto(@RequestBody ProyectoDto request, @PathVariable Long proyectoId) {
+        if (!proyectoService.existsProyecto(proyectoId)){ return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
 
         try {
-            proyectoService.modifyProyecto(request, proyectoId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            proyectoService.updateProyecto(request, proyectoId);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (ProyectoInvalidoException e) {
+            return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/{proyectoId}/tarea/{tareaId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateTarea(@RequestBody TareaDto request, @PathVariable Long proyectoId, @PathVariable Long tareaId) {
+        if (!proyectoService.existsProyecto(proyectoId)){ return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+        if (!tareaService.existsTarea(tareaId)){ return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+
+        try {
+            proyectoService.updateTarea(request, proyectoId, tareaId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TareaInvalidaException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
         }
     }

@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
-import psa.api_proyectos.application.exceptions.NoExisteElProyectoPedidoException;
-import psa.api_proyectos.application.exceptions.NoExistenProyectosException;
-import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
-import psa.api_proyectos.application.exceptions.TareaInvalidaException;
+import psa.api_proyectos.application.exceptions.*;
 import psa.api_proyectos.data.repositories.*;
 import psa.api_proyectos.domain.models.*;
 
@@ -23,9 +20,9 @@ public class ProyectoService {
     @Autowired
     private ProyectoEstadoRepository proyectoEstadoRepository;
     @Autowired
-    private TareaEstadoRepository tareaEstadoRepository;
-    @Autowired
     private TareaRepository tareaRepository;
+    @Autowired
+    private TareaService tareaService;
 
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
@@ -84,7 +81,7 @@ public class ProyectoService {
     private void validarDatosTarea(TareaDto dto, Long proyectoId) {
         HashMap<String, String> errores = new HashMap<>();
 
-        if (!proyectoRepository.existsById(proyectoId))
+        if (!existsProyecto(proyectoId))
             errores.put("proyecto", "No existe un 'Proyecto' con Id " + proyectoId);
         if (dto.getDescripcion() == null) {
             errores.put("descripcion", "'Descripcion' es obligatorio");
@@ -94,7 +91,7 @@ public class ProyectoService {
         if (dto.getEstadoIdm() == null) {
             errores.put("estado", "'Estado' es obligatorio");
         } else {
-            if (!tareaEstadoRepository.existsById(dto.getEstadoIdm()))
+            if (!tareaService.existsTareaEstado(dto.getEstadoIdm()))
                 errores.put("estado", "No existe un 'Estado' de Tarea con Idm " + dto.getEstadoIdm());
         }
 
@@ -112,7 +109,7 @@ public class ProyectoService {
         validarDatosTarea(dto, proyectoId);
 
         // Buscamos el estado seleccionado
-        TareaEstado estado = this.getTareaEstadoByIdm(dto.getEstadoIdm());
+        TareaEstado estado = tareaService.getTareaEstadoByIdm(dto.getEstadoIdm());
 
         Proyecto proyecto = this.getProyectoById(proyectoId);
 
@@ -122,6 +119,7 @@ public class ProyectoService {
         nuevaTarea.proyecto = proyecto;
         nuevaTarea.fechaInicio = dto.getFechaInicio();
         nuevaTarea.fechaFin = dto.getFechaFin();
+        nuevaTarea.colaboradorAsignadoId = dto.getAsignadoId();
 
         tareaRepository.save(nuevaTarea);
 
@@ -137,10 +135,10 @@ public class ProyectoService {
     }
 
     public boolean existsProyecto(Long proyectoId) {
-        return (proyectoRepository.findById(proyectoId).orElse(null) != null);
+        return (proyectoRepository.existsById(proyectoId));
     }
 
-    public void modifyProyecto(ProyectoDto dto, Long proyectoId) {
+    public void updateProyecto(ProyectoDto dto, Long proyectoId) {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = getProyectoById(proyectoId);
@@ -148,9 +146,22 @@ public class ProyectoService {
         proyectoRepository.save(proyecto);
     }
 
-    private TareaEstado getTareaEstadoByIdm(Long estadoIdm) {
-        Optional<TareaEstado> estadoOptional = tareaEstadoRepository.findById(estadoIdm);
-        return estadoOptional.orElse(null);
+    public void updateTarea(TareaDto dto, Long proyectoId, Long tareaId) {
+        validarDatosTarea(dto, proyectoId);
+
+        TareaEstado estado = tareaService.getTareaEstadoByIdm(dto.getEstadoIdm());
+
+        Proyecto proyecto = this.getProyectoById(proyectoId);
+        Tarea tarea = tareaService.getTareaById(tareaId);
+
+        tarea.descripcion = dto.getDescripcion();
+        tarea.estado = estado;
+        tarea.proyecto = proyecto;
+        tarea.fechaInicio = dto.getFechaInicio();
+        tarea.fechaFin = dto.getFechaFin();
+        tarea.colaboradorAsignadoId = dto.getAsignadoId();
+
+        tareaRepository.save(tarea);
     }
 
     private Proyecto mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoDto dto) {

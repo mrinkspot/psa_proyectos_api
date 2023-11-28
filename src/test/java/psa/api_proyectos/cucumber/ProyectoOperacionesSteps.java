@@ -122,7 +122,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
         //Modificamos
         proyectoModificadoDto.setNombre("Proyecto modificado");
 
-        proyectoService.modifyProyecto(proyectoModificadoDto, proyectoId);
+        proyectoService.updateProyecto(proyectoModificadoDto, proyectoId);
     }
 
     @Then("^El proyecto no es creado, y se informa del error$")
