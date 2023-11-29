@@ -1,5 +1,6 @@
 package psa.api_proyectos.web.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
 import psa.api_proyectos.application.exceptions.*;
+import psa.api_proyectos.application.services.RecursosService;
 import psa.api_proyectos.application.services.TareaService;
 import psa.api_proyectos.domain.models.Proyecto;
 import psa.api_proyectos.domain.models.Tarea;
@@ -36,6 +38,7 @@ public class ProyectoController {
     public ResponseEntity<?> getProyectoById(@PathVariable Long proyectoId) {
         try {
             Proyecto proyecto = proyectoService.getProyectoById(proyectoId);
+
             return new ResponseEntity<>(proyecto, HttpStatus.OK);
         } catch (ProyectoNoEncontradoException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
