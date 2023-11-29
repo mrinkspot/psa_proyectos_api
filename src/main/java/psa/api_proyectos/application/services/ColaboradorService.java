@@ -31,4 +31,8 @@ public class ColaboradorService {
         }
         return colaborador;
     }
+
+    public boolean colaboradorExists(long colaboradorLegajo) throws JsonProcessingException {
+        return getColaboradores().stream().anyMatch(c -> c.getLegajo() == colaboradorLegajo);
+    }
 }

@@ -1,5 +1,6 @@
 package psa.api_proyectos.application.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import psa.api_proyectos.application.dtos.ProyectoDto;
@@ -23,6 +24,8 @@ public class ProyectoService {
     private TareaRepository tareaRepository;
     @Autowired
     private TareaService tareaService;
+    @Autowired
+    private ColaboradorService colaboradorService;
 
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
@@ -34,7 +37,7 @@ public class ProyectoService {
         return proyectos;
     }
 
-    private void validarDatosProyecto(ProyectoDto dto) {
+    private void validarDatosProyecto(ProyectoDto dto) throws JsonProcessingException {
         HashMap<String, String> errores = new HashMap<>();
 
         if (dto.getNombre() == null) {
@@ -58,12 +61,16 @@ public class ProyectoService {
             errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
         }
 
+        if (!colaboradorService.colaboradorExists(dto.getLiderId())) {
+            errores.put("liderId", "No existe un 'Lider' con legajo " + dto.getLiderId());
+        }
+
         if (!errores.isEmpty()) {
             throw new ProyectoInvalidoException(errores);
         }
     }
 
-    public Proyecto saveProyecto(ProyectoDto dto) {
+    public Proyecto saveProyecto(ProyectoDto dto) throws JsonProcessingException {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = new Proyecto();
@@ -78,7 +85,7 @@ public class ProyectoService {
         return estadoOptional.orElse(null);
     }
 
-    private void validarDatosTarea(TareaDto dto, Long proyectoId) {
+    private void validarDatosTarea(TareaDto dto, Long proyectoId) throws JsonProcessingException {
         HashMap<String, String> errores = new HashMap<>();
 
         if (!existsProyecto(proyectoId))
@@ -100,12 +107,16 @@ public class ProyectoService {
             errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
         }
 
+        if (!colaboradorService.colaboradorExists(dto.getColaboradorAsignadoId())) {
+            errores.put("liderId", "No existe un 'Colaborador' con legajo " + dto.getColaboradorAsignadoId());
+        }
+
         if (!errores.isEmpty()) {
             throw new TareaInvalidaException(errores);
         }
     }
 
-    public Tarea saveTarea(TareaDto dto, Long proyectoId) {
+    public Tarea saveTarea(TareaDto dto, Long proyectoId) throws JsonProcessingException {
         validarDatosTarea(dto, proyectoId);
 
         // Buscamos el estado seleccionado
@@ -119,7 +130,7 @@ public class ProyectoService {
         nuevaTarea.proyecto = proyecto;
         nuevaTarea.fechaInicio = dto.getFechaInicio();
         nuevaTarea.fechaFin = dto.getFechaFin();
-        nuevaTarea.colaboradorAsignadoId = dto.getAsignadoId();
+        nuevaTarea.colaboradorAsignadoId = dto.getColaboradorAsignadoId();
 
         tareaRepository.save(nuevaTarea);
 
@@ -138,7 +149,7 @@ public class ProyectoService {
         return (proyectoRepository.existsById(proyectoId));
     }
 
-    public void updateProyecto(ProyectoDto dto, Long proyectoId) {
+    public void updateProyecto(ProyectoDto dto, Long proyectoId) throws JsonProcessingException {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = getProyectoById(proyectoId);
@@ -146,7 +157,7 @@ public class ProyectoService {
         proyectoRepository.save(proyecto);
     }
 
-    public void updateTarea(TareaDto dto, Long proyectoId, Long tareaId) {
+    public void updateTarea(TareaDto dto, Long proyectoId, Long tareaId) throws JsonProcessingException {
         validarDatosTarea(dto, proyectoId);
 
         TareaEstado estado = tareaService.getTareaEstadoByIdm(dto.getEstadoIdm());
@@ -159,7 +170,7 @@ public class ProyectoService {
         tarea.proyecto = proyecto;
         tarea.fechaInicio = dto.getFechaInicio();
         tarea.fechaFin = dto.getFechaFin();
-        tarea.colaboradorAsignadoId = dto.getAsignadoId();
+        tarea.colaboradorAsignadoId = dto.getColaboradorAsignadoId();
 
         tareaRepository.save(tarea);
     }

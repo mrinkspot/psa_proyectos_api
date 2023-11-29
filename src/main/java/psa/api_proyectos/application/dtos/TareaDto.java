@@ -12,5 +12,5 @@ public class TareaDto {
     private Date fechaInicio;
     private Date fechaFin;
     private Long estadoIdm;
-    private Long asignadoId;
+    private Long colaboradorAsignadoId;
 }

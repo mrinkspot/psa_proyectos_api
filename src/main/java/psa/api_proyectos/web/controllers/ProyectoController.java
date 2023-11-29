@@ -1,5 +1,6 @@
 package psa.api_proyectos.web.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +83,8 @@ public class ProyectoController {
             return new ResponseEntity<>(proyecto, HttpStatus.OK);
         } catch (ProyectoInvalidoException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,6 +96,8 @@ public class ProyectoController {
             return new ResponseEntity<>(tarea, HttpStatus.OK);
         } catch (TareaInvalidaException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -106,6 +111,8 @@ public class ProyectoController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ProyectoInvalidoException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -120,6 +127,8 @@ public class ProyectoController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TareaInvalidaException e) {
             return new ResponseEntity<>(e.getErrores(), HttpStatus.BAD_REQUEST);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

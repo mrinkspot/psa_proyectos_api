@@ -1,5 +1,6 @@
 package psa.api_proyectos.cucumber;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -43,7 +44,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
     //TEST ===================================================================================
 
     @Given("^Existe un proyecto y se conoce su Id$")
-    public void creacionDeUnProyectoExistente() {
+    public void creacionDeUnProyectoExistente() throws JsonProcessingException {
         proyectoDto.setNombre("Proyecto de prueba");
         proyectoDto.setDescripcion("Esta es la descripcion de un proyecto");
         proyectoDto.setEstadoIdm(ProyectoEstado.NO_INICIADO_IDM);
@@ -108,7 +109,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
     }
 
     @When("^Este se le intentan modifica su nombre con un nombre valido$")
-    public void modificacionDeNombreDeProyecto(){
+    public void modificacionDeNombreDeProyecto() throws JsonProcessingException {
         ProyectoDto proyectoModificadoDto = new ProyectoDto();
 
         //Se mantienen los campos anteriores

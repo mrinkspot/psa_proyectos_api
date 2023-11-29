@@ -1,5 +1,6 @@
 package psa.api_proyectos.cucumber;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -18,7 +19,6 @@ import psa.api_proyectos.domain.models.TareaEstado;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,7 +49,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
 
 
     @Given("^Que existe un proyecto crado y conozco su Id$")
-    public void creacionDeProyecto() {
+    public void creacionDeProyecto() throws JsonProcessingException {
         if (proyectoDto == null) {
             proyectoDto = new ProyectoDto();
             proyectoDto.setNombre("a");
@@ -70,7 +70,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
         //Arrange
         tareaDto.setDescripcion("Una super descripcion de una tarea");
         tareaDto.setEstadoIdm(TareaEstado.NUEVA_IDM);
-        tareaDto.setAsignadoId(1L);
+        tareaDto.setColaboradorAsignadoId(1L);
         tareaDto.setFechaInicio(Date.valueOf("2015-12-12"));
         tareaDto.setFechaFin(Date.valueOf("2022-02-02"));
 
@@ -82,7 +82,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
         //Arrange
         tareaDto.setDescripcion("Una super descripcion de una tarea");
         tareaDto.setEstadoIdm(TareaEstado.NUEVA_IDM);
-        tareaDto.setAsignadoId(1L);
+        tareaDto.setColaboradorAsignadoId(1L);
 
         assertDoesNotThrow( () -> {tareaId = proyectoService.saveTarea(tareaDto, proyectoId).id;});
     }
@@ -91,14 +91,14 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     public void creacionIncorrectaDeUnaTareaPorDescripcionEquivocada() {
         //Arrange
         tareaDto.setEstadoIdm(TareaEstado.NUEVA_IDM);
-        tareaDto.setAsignadoId(1L);
+        tareaDto.setColaboradorAsignadoId(1L);
     }
 
     @When("^Se intenta crear una tarea sin indicar un estado correctamente$")
     public void creacionIncorrectaDeUnaTareaPorEstadoVacio() {
         //Arrange
         tareaDto.setDescripcion("Hola reyes");
-        tareaDto.setAsignadoId(1L);
+        tareaDto.setColaboradorAsignadoId(1L);
     }
 
     @When("^se intenta crear una tarea con una fecha final anterior a su fecha de inicio$")
@@ -106,7 +106,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
         //Arrange
         tareaDto.setDescripcion("Una super descripcion de una tarea");
         tareaDto.setEstadoIdm(TareaEstado.NUEVA_IDM);
-        tareaDto.setAsignadoId(1L);
+        tareaDto.setColaboradorAsignadoId(1L);
         tareaDto.setFechaFin(Date.valueOf("2015-12-12"));
         tareaDto.setFechaInicio(Date.valueOf("2022-02-02"));
     }
@@ -115,7 +115,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     public void creacionIncorrectaDeUnaTareaPorIdDeproyectoIncorrecto(){
         tareaDto.setDescripcion("Una super descripcion de una tarea");
         tareaDto.setEstadoIdm(TareaEstado.NUEVA_IDM);
-        tareaDto.setAsignadoId(1L);
+        tareaDto.setColaboradorAsignadoId(1L);
     }
 
     @Then("^La tarea se crea correctamente$")
