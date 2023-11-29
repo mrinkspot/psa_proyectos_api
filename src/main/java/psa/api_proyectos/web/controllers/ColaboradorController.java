@@ -8,31 +8,31 @@ import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.application.dtos.ColaboradorDto;
 import psa.api_proyectos.application.exceptions.ColaboradorNoEncontradoException;
 import psa.api_proyectos.application.exceptions.ErrorMessage;
-import psa.api_proyectos.application.services.RecursosService;
+import psa.api_proyectos.application.services.ColaboradorService;
 
 import java.util.ArrayList;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/recursos")
-public class RecursosController {
+@RequestMapping("/colaborador")
+public class ColaboradorController {
     @Autowired
-    RecursosService recursosService;
+    ColaboradorService colaboradorService;
 
-    @GetMapping("/colaborador")
+    @GetMapping()
     public ResponseEntity<?> getColaboradores() {
         try {
-            ArrayList<ColaboradorDto> colaboradores = recursosService.getColaboradores();
+            ArrayList<ColaboradorDto> colaboradores = colaboradorService.getColaboradores();
             return new ResponseEntity<>(colaboradores, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @GetMapping("/colaborador/{colaboradorLegajo}")
+    @GetMapping("/{colaboradorLegajo}")
     public ResponseEntity<?> getColaboradorByLegajo(@PathVariable Long colaboradorLegajo) {
         try {
-            ColaboradorDto colaboradores = recursosService.getColaboradorByLegajo(colaboradorLegajo);
+            ColaboradorDto colaboradores = colaboradorService.getColaboradorByLegajo(colaboradorLegajo);
             return new ResponseEntity<>(colaboradores, HttpStatus.OK);
         } catch (ColaboradorNoEncontradoException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
