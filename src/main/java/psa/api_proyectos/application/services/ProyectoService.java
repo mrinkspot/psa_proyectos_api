@@ -108,7 +108,7 @@ public class ProyectoService {
         }
 
         if (!colaboradorService.colaboradorExists(dto.getColaboradorAsignadoId())) {
-            errores.put("liderId", "No existe un 'Colaborador' con legajo " + dto.getColaboradorAsignadoId());
+            errores.put("colaboradorAsignadoId", "No existe un 'Colaborador' con legajo " + dto.getColaboradorAsignadoId());
         }
 
         if (!errores.isEmpty()) {
