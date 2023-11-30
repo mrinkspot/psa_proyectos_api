@@ -188,6 +188,8 @@ public class ProyectoService {
     }
 
     public void deleteProyectoById(Long proyectoId) {
+        ArrayList<Tarea> tareas = this.getTareasByProyectoId(proyectoId);
+        tareaRepository.deleteAll(tareas);
         Proyecto proyecto = this.getProyectoById(proyectoId);
         proyectoRepository.delete(proyecto);
     }

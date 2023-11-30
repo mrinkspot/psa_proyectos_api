@@ -60,8 +60,13 @@ public class ProyectoController {
 
     // TODO: ver si es necesario pasar el id de proyecto y qué utilidad podemos darle
     @GetMapping("/{proyectoId}/tarea/{tareaId}")
-    public Tarea getTareaById(@PathVariable Long tareaId) {
-        return tareaService.getTareaById(tareaId);
+    public ResponseEntity<?> getTareaById(@PathVariable Long tareaId) {
+        try {
+            Tarea tarea = tareaService.getTareaById(tareaId);
+            return new ResponseEntity<>(tarea, HttpStatus.OK);
+        } catch (TareaNoEncontradaException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
     // TODO: idem GET, probablemente podamos definir alguna regla de negocio que involucre el estado del proyecto
     // o de la tarea misma
