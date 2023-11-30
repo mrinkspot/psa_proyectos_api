@@ -10,9 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.dtos.TareaDto;
-import psa.api_proyectos.application.exceptions.NoExisteElProyectoPedidoException;
 import psa.api_proyectos.application.exceptions.TareaInvalidaException;
+import psa.api_proyectos.application.exceptions.TareaNoEncontradaException;
 import psa.api_proyectos.application.services.ProyectoService;
+import psa.api_proyectos.application.services.TareaService;
 import psa.api_proyectos.domain.models.ProyectoEstado;
 import psa.api_proyectos.domain.models.Tarea;
 import psa.api_proyectos.domain.models.TareaEstado;
@@ -28,6 +29,8 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
 
     @Autowired
     private ProyectoService proyectoService;
+    @Autowired
+    private TareaService tareaService;
     private ProyectoDto proyectoDto;
     private Long proyectoId;
     private TareaDto tareaDto;
@@ -63,6 +66,19 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     @Given("^Que tengo un id de un proyecto que no existe$")
     public void asignacionDeIdIncorrectoAProyecto(){
         proyectoId = 8573L;
+    }
+
+    @Given("^Existe una tarea, esta pertenece a un proyecto y se conoce su Id y el Id del proyecto$")
+    public void creacionDeTarea() throws JsonProcessingException {
+        creacionDeProyecto();
+
+        tareaDto.setDescripcion("Una super descripcion de una tarea");
+        tareaDto.setEstadoIdm(TareaEstado.NUEVA_IDM);
+        tareaDto.setColaboradorAsignadoId(1L);
+        tareaDto.setFechaInicio(Date.valueOf("2015-12-12"));
+        tareaDto.setFechaFin(Date.valueOf("2022-02-02"));
+
+        tareaId = proyectoService.saveTarea(tareaDto, proyectoId).id;
     }
 
     @When("^Se intenta crear una tarea con todos los campos asignados correctamente$")
@@ -118,6 +134,39 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
         tareaDto.setColaboradorAsignadoId(1L);
     }
 
+    @When("^Se le intentan modificar algún campo de la tarea con un dato válido$")
+    public void modificacionCorrectaDeTarea() throws JsonProcessingException {
+        TareaDto tareaModificada = new TareaDto();
+
+        tareaModificada.setDescripcion("descripcionModificada");
+        tareaModificada.setFechaInicio(Date.valueOf("2010-10-10"));
+        tareaModificada.setFechaFin(Date.valueOf("2023-03-03"));
+        tareaModificada.setEstadoIdm(TareaEstado.EN_CURSO_IDM);
+        tareaModificada.setColaboradorAsignadoId(2L);
+
+        //Modificamos
+
+        proyectoService.updateTarea(tareaModificada, proyectoId, tareaId);
+    }
+
+    @When("^Se le intentan modificar algún campo de la tarea con un dato inválido$")
+    public void modificacionIncorrectaDeTarea() {
+        TareaDto tareaModificada = new TareaDto();
+
+        tareaModificada.setDescripcion(null);
+        tareaModificada.setFechaInicio(null);
+        tareaModificada.setFechaFin(Date.valueOf("2023-03-03"));
+        tareaModificada.setEstadoIdm(TareaEstado.EN_CURSO_IDM);
+        tareaModificada.setColaboradorAsignadoId(2L);
+
+        //Modificamos
+        assertThrows(TareaInvalidaException.class, () ->proyectoService.updateTarea(tareaModificada, proyectoId, tareaId));
+    }
+    @When("^Se le intenta eliminar a la tarea$")
+    public void EliminacionDeTarea(){
+        tareaService.deleteTareaById(tareaId);
+    }
+
     @Then("^La tarea se crea correctamente$")
     public void validacionDeCorrectaCreacionDeTarea(){
         ArrayList<Tarea> tareasObtenidas = proyectoService.getTareasByProyectoId(proyectoId);
@@ -136,10 +185,40 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     @Then("^La tarea no es creada porque el proyecto no existe$")
     public void validacionDeQueLaTareaNoHaSidoCreadaPorProyectoInexistente(){
         assertThrows(
-                NoExisteElProyectoPedidoException.class,
+                TareaInvalidaException.class,
                 () -> proyectoService.saveTarea(tareaDto, proyectoId)
         );
     }
+    
+    @Then("^La tarea se actualiza y ahora tiene sus campos modificados$")
+    public void validacionDeModificacionCorrectaDeTarea(){
+        Tarea tareaModificada = proyectoService.getTareasByProyectoId(proyectoId).stream().filter(
+                tarea -> tareaId == tarea.id
+        ).findAny().orElse(null);
 
+        assertEquals(tareaModificada.descripcion, "descripcionModificada");
+        assertEquals(tareaModificada.estado.idm, ProyectoEstado.EN_PROGRESO_IDM);
+        assertEquals(tareaModificada.fechaInicio, Date.valueOf("2010-10-10"));
+        assertEquals(tareaModificada.fechaFin, Date.valueOf("2023-03-03"));
+        assertEquals(tareaModificada.colaboradorAsignadoId, 2L);
+    }
+
+    @Then("^La tarea no se actualiza y se recibe una excepción$")
+    public void validacionDeModificacionIncorrectaDeTarea(){
+        Tarea tareaModificada = proyectoService.getTareasByProyectoId(proyectoId).stream().filter(
+                tarea -> tareaId == tarea.id
+        ).findAny().orElse(null);
+
+        assertEquals(tareaModificada.descripcion, tareaDto.getDescripcion());
+        assertEquals(tareaModificada.estado.idm, tareaDto.getEstadoIdm());
+        assertEquals(tareaModificada.fechaInicio, tareaDto.getFechaInicio());
+        assertEquals(tareaModificada.fechaFin, tareaDto.getFechaFin());
+        assertEquals(tareaModificada.colaboradorAsignadoId, tareaDto.getColaboradorAsignadoId());
+    }
+
+    @Then("^La tarea es eliminada y ya no puede ser obtenida$")
+    public void validacionTareaEliminada(){
+        assertThrows(TareaNoEncontradaException.class, () -> tareaService.getTareaById(tareaId));
+    }
 
 }

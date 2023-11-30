@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import psa.api_proyectos.application.dtos.ProyectoDto;
 import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
+import psa.api_proyectos.application.exceptions.ProyectoNoEncontradoException;
 import psa.api_proyectos.application.services.ProyectoService;
 import psa.api_proyectos.domain.models.Proyecto;
 import psa.api_proyectos.domain.models.ProyectoEstado;
@@ -108,22 +109,43 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
         proyectoDto.setFechaInicio(fechaInicio);
     }
 
-    @When("^Este se le intentan modifica su nombre con un nombre valido$")
-    public void modificacionDeNombreDeProyecto() throws JsonProcessingException {
+    @When("^Se le intentan modificar algún campo con un dato válido$")
+    public void modificacionDeProyecto() throws JsonProcessingException {
         ProyectoDto proyectoModificadoDto = new ProyectoDto();
 
-        //Se mantienen los campos anteriores
-        Proyecto proyectoAnterior = proyectoService.getProyectoById(proyectoId);
-        proyectoModificadoDto.setDescripcion(proyectoAnterior.getDescripcion());
-        proyectoModificadoDto.setFechaInicio(proyectoAnterior.getFechaInicio());
-        proyectoModificadoDto.setFechaFin(proyectoAnterior.getFechaFin());
-        proyectoModificadoDto.setLiderId(proyectoAnterior.getLiderAsignadoId());
-        proyectoModificadoDto.setEstadoIdm(proyectoAnterior.getEstado().idm);
+        proyectoModificadoDto.setNombre("Proyecto modificado");
+        proyectoModificadoDto.setDescripcion("descripcionModificada");
+        proyectoModificadoDto.setFechaInicio(Date.valueOf("2010-10-10"));
+        proyectoModificadoDto.setFechaFin(Date.valueOf("2023-03-03"));
+        proyectoModificadoDto.setLiderId(2L);
+        proyectoModificadoDto.setEstadoIdm(ProyectoEstado.EN_PROGRESO_IDM);
 
         //Modificamos
-        proyectoModificadoDto.setNombre("Proyecto modificado");
 
         proyectoService.updateProyecto(proyectoModificadoDto, proyectoId);
+    }
+
+    @When("^Se le intentan modificar algún campo con un dato inválido$")
+    public void modificacionConCamposInvalidos() throws JsonProcessingException{
+        ProyectoDto proyectoModificadoDto = new ProyectoDto();
+
+        proyectoModificadoDto.setNombre("");
+        proyectoModificadoDto.setDescripcion("");
+        proyectoModificadoDto.setFechaInicio(Date.valueOf("2010-10-10"));
+        proyectoModificadoDto.setFechaFin(Date.valueOf("2023-03-03"));
+        proyectoModificadoDto.setLiderId(900L);
+        proyectoModificadoDto.setEstadoIdm(ProyectoEstado.EN_PROGRESO_IDM);
+
+        //Modificamos
+        assertThrows(
+                ProyectoInvalidoException.class,
+                () -> proyectoService.updateProyecto(proyectoModificadoDto, proyectoId)
+        );
+    }
+
+    @When("^Se le intenta eliminar$")
+    public void borradoDeProyectoCreado(){
+        proyectoService.deleteProyectoById(proyectoId);
     }
 
     @Then("^El proyecto no es creado, y se informa del error$")
@@ -139,9 +161,30 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
         assertNotNull(proyectoService.getProyectoById(proyectoId));
     }
 
-    @Then("^El proyecto se actualiza y ahora tiene su nombre modificado$")
-    public void validacionDeModificacionDeNombreDeProyecto() {
+    @Then("^El proyecto se actualiza y ahora tiene sus campos modificados$")
+    public void validacionDeModificacionDeProyecto() {
         Proyecto proyectoModificado = proyectoService.getProyectoById(proyectoId);
         assertEquals(proyectoModificado.getNombre(), "Proyecto modificado");
+        assertEquals(proyectoModificado.getDescripcion(), "descripcionModificada");
+        assertEquals(proyectoModificado.getEstado().idm, ProyectoEstado.EN_PROGRESO_IDM);
+        assertEquals(proyectoModificado.getFechaInicio(), Date.valueOf("2010-10-10"));
+        assertEquals(proyectoModificado.getFechaFin(), Date.valueOf("2023-03-03"));
+        assertEquals(proyectoModificado.getLiderAsignadoId(), 2L);
+    }
+
+    @Then("^El proyecto no se actualiza y se recibe una excepción$")
+    public void validacionDeNoModificacionDeProyecto() {
+        Proyecto proyectoNoModificado = proyectoService.getProyectoById(proyectoId);
+        assertEquals(proyectoNoModificado.getNombre(), proyectoDto.getNombre());
+        assertEquals(proyectoNoModificado.getDescripcion(), proyectoDto.getDescripcion());
+        assertEquals(proyectoNoModificado.getEstado().idm, proyectoDto.getEstadoIdm());
+        assertEquals(proyectoNoModificado.getFechaInicio(), proyectoDto.getFechaInicio());
+        assertEquals(proyectoNoModificado.getFechaFin(), proyectoDto.getFechaFin());
+        assertEquals(proyectoNoModificado.getLiderAsignadoId(), proyectoDto.getLiderId());
+    }
+
+    @Then("^El proyecto es eliminado y ya no puede ser obtenido$")
+    public void validacionDeProyectoEliminado(){
+        assertThrows(ProyectoNoEncontradoException.class, () -> proyectoService.getProyectoById(proyectoId));
     }
 }
