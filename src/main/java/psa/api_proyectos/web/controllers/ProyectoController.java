@@ -25,12 +25,8 @@ public class ProyectoController {
 
     @GetMapping()
     public ResponseEntity<?> getProyectos() {
-        try {
-            ArrayList<Proyecto> proyectos = proyectoService.getProyectos();
-            return new ResponseEntity<>(proyectos, HttpStatus.OK);
-        } catch (NoExistenProyectosException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
-        }
+        ArrayList<Proyecto> proyectos = proyectoService.getProyectos();
+        return new ResponseEntity<>(proyectos, HttpStatus.OK);
     }
 
     @GetMapping("/{proyectoId}")

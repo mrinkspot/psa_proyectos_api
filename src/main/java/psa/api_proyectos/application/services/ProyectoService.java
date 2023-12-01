@@ -32,9 +32,7 @@ public class ProyectoService {
     }
 
     public ArrayList<Proyecto> getProyectos() {
-        ArrayList<Proyecto> proyectos = (ArrayList<Proyecto>) proyectoRepository.findAll();
-        if (proyectos.isEmpty()) throw new NoExistenProyectosException("No existen proyectos");
-        return proyectos;
+        return (ArrayList<Proyecto>) proyectoRepository.findAll();
     }
 
     private void validarDatosProyecto(ProyectoDto dto) throws JsonProcessingException {
@@ -74,7 +72,7 @@ public class ProyectoService {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = new Proyecto();
-        proyecto = mapProyectoDtoToProyecto(proyecto, dto);
+        mapProyectoDtoToProyecto(proyecto, dto);
         proyectoRepository.save(proyecto);
 
         return proyecto;
@@ -153,7 +151,7 @@ public class ProyectoService {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = getProyectoById(proyectoId);
-        proyecto = mapProyectoDtoToProyecto(proyecto, dto);
+        mapProyectoDtoToProyecto(proyecto, dto);
         proyectoRepository.save(proyecto);
     }
 
@@ -175,7 +173,7 @@ public class ProyectoService {
         tareaRepository.save(tarea);
     }
 
-    private Proyecto mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoDto dto) {
+    private void mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoDto dto) {
         proyecto.setNombre(dto.getNombre());
         proyecto.setDescripcion(dto.getDescripcion());
         proyecto.setFechaInicio(dto.getFechaInicio());
@@ -183,8 +181,6 @@ public class ProyectoService {
         ProyectoEstado estado = this.getProyectoEstadoByIdm(dto.getEstadoIdm());
         proyecto.setEstado(estado);
         proyecto.setLiderAsignadoId(dto.getLiderId());
-
-        return proyecto;
     }
 
     public void deleteProyectoById(Long proyectoId) {
