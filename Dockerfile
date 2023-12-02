@@ -1,4 +1,9 @@
-FROM amazoncorretto:17
-MAINTAINER SQAD_10
-COPY target/api_proyectos-0.0.1-SNAPSHOT.war psa_proyectos_api.war
-ENTRYPOINT ["java", "-war", "/psa_proyectos_api.war"]
+FROM openjdk:17-alpine
+
+WORKDIR /app
+
+COPY target/api_proyectos-0.0.1-SNAPSHOT.war api_proyectos.war
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "api_proyectos.war"]
