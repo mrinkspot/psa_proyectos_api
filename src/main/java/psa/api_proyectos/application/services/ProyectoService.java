@@ -3,8 +3,10 @@ package psa.api_proyectos.application.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import psa.api_proyectos.application.dtos.ProyectoDto;
-import psa.api_proyectos.application.dtos.TareaDto;
+import psa.api_proyectos.application.dtos.ProyectoRequestDto;
+import psa.api_proyectos.application.dtos.ProyectoResponseDto;
+import psa.api_proyectos.application.dtos.TareaRequestDto;
+import psa.api_proyectos.application.dtos.TareaResponseDto;
 import psa.api_proyectos.application.exceptions.*;
 import psa.api_proyectos.data.repositories.*;
 import psa.api_proyectos.domain.models.*;
@@ -12,6 +14,7 @@ import psa.api_proyectos.domain.models.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -35,7 +38,7 @@ public class ProyectoService {
         return (ArrayList<Proyecto>) proyectoRepository.findAll();
     }
 
-    private void validarDatosProyecto(ProyectoDto dto) throws JsonProcessingException {
+    private void validarDatosProyecto(ProyectoRequestDto dto) throws JsonProcessingException {
         HashMap<String, String> errores = new HashMap<>();
 
         if (dto.getNombre() == null) {
@@ -68,7 +71,7 @@ public class ProyectoService {
         }
     }
 
-    public Proyecto saveProyecto(ProyectoDto dto) throws JsonProcessingException {
+    public Proyecto saveProyecto(ProyectoRequestDto dto) throws JsonProcessingException {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = new Proyecto();
@@ -83,7 +86,7 @@ public class ProyectoService {
         return estadoOptional.orElse(null);
     }
 
-    private void validarDatosTarea(TareaDto dto, Long proyectoId) throws JsonProcessingException {
+    private void validarDatosTarea(TareaRequestDto dto, Long proyectoId) throws JsonProcessingException {
         HashMap<String, String> errores = new HashMap<>();
 
         if (!existsProyecto(proyectoId))
@@ -114,10 +117,9 @@ public class ProyectoService {
         }
     }
 
-    public Tarea saveTarea(TareaDto dto, Long proyectoId) throws JsonProcessingException {
+    public Tarea saveTarea(TareaRequestDto dto, Long proyectoId) throws JsonProcessingException {
         validarDatosTarea(dto, proyectoId);
 
-        // Buscamos el estado seleccionado
         TareaEstado estado = tareaService.getTareaEstadoByIdm(dto.getEstadoIdm());
 
         Proyecto proyecto = this.getProyectoById(proyectoId);
@@ -147,7 +149,7 @@ public class ProyectoService {
         return (proyectoRepository.existsById(proyectoId));
     }
 
-    public void updateProyecto(ProyectoDto dto, Long proyectoId) throws JsonProcessingException {
+    public void updateProyecto(ProyectoRequestDto dto, Long proyectoId) throws JsonProcessingException {
         validarDatosProyecto(dto);
 
         Proyecto proyecto = getProyectoById(proyectoId);
@@ -155,7 +157,7 @@ public class ProyectoService {
         proyectoRepository.save(proyecto);
     }
 
-    public void updateTarea(TareaDto dto, Long proyectoId, Long tareaId) throws JsonProcessingException {
+    public void updateTarea(TareaRequestDto dto, Long proyectoId, Long tareaId) throws JsonProcessingException {
         validarDatosTarea(dto, proyectoId);
 
         TareaEstado estado = tareaService.getTareaEstadoByIdm(dto.getEstadoIdm());
@@ -173,7 +175,7 @@ public class ProyectoService {
         tareaRepository.save(tarea);
     }
 
-    private void mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoDto dto) {
+    private void mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoRequestDto dto) {
         proyecto.setNombre(dto.getNombre());
         proyecto.setDescripcion(dto.getDescripcion());
         proyecto.setFechaInicio(dto.getFechaInicio());
@@ -189,4 +191,38 @@ public class ProyectoService {
         Proyecto proyecto = this.getProyectoById(proyectoId);
         proyectoRepository.delete(proyecto);
     }
+
+    public ProyectoResponseDto mapToResponse(Proyecto proyecto) throws JsonProcessingException {
+        ProyectoResponseDto response = new ProyectoResponseDto();
+
+        response.id = proyecto.getId();
+        response.nombre = proyecto.getNombre();
+        response.descripcion = proyecto.getDescripcion();
+        response.fechaInicio = proyecto.getFechaInicio();
+        response.fechaFin = proyecto.getFechaFin();
+        response.estado = proyecto.getEstado().descripcion;
+        response.liderAsignado = colaboradorService.getColaboradorByLegajo(proyecto.getLiderAsignadoId());
+
+        ArrayList<Tarea> tareas = getTareasByProyectoId(proyecto.getId());
+
+        response.tareas = tareaService.mapToResponse(tareas);
+
+        return response;
+    }
+
+    public ArrayList<ProyectoResponseDto> mapToResponse(ArrayList<Proyecto> proyectos) {
+        ArrayList<ProyectoResponseDto> proyectoResponseDtos = new ArrayList<>();
+
+        for (Proyecto proyecto : proyectos) {
+            try {
+                ProyectoResponseDto proyectoResponseDto = mapToResponse(proyecto);
+                proyectoResponseDtos.add(proyectoResponseDto);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return proyectoResponseDtos;
+    }
+
 }

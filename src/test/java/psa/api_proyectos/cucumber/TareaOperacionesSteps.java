@@ -8,8 +8,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import psa.api_proyectos.application.dtos.ProyectoDto;
-import psa.api_proyectos.application.dtos.TareaDto;
+import psa.api_proyectos.application.dtos.ProyectoRequestDto;
+import psa.api_proyectos.application.dtos.TareaRequestDto;
 import psa.api_proyectos.application.exceptions.TareaInvalidaException;
 import psa.api_proyectos.application.exceptions.TareaNoEncontradaException;
 import psa.api_proyectos.application.services.ProyectoService;
@@ -31,9 +31,9 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     private ProyectoService proyectoService;
     @Autowired
     private TareaService tareaService;
-    private ProyectoDto proyectoDto;
+    private ProyectoRequestDto proyectoDto;
     private Long proyectoId;
-    private TareaDto tareaDto;
+    private TareaRequestDto tareaDto;
     private Long tareaId;
 
     @After
@@ -45,7 +45,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     @Before
     public void before() {
         log.info(">>> Before scenario!");
-        tareaDto = new TareaDto();
+        tareaDto = new TareaRequestDto();
     }
 
     //TEST =======================================================================
@@ -54,7 +54,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
     @Given("^Que existe un proyecto crado y conozco su Id$")
     public void creacionDeProyecto() throws JsonProcessingException {
         if (proyectoDto == null) {
-            proyectoDto = new ProyectoDto();
+            proyectoDto = new ProyectoRequestDto();
             proyectoDto.setNombre("a");
             proyectoDto.setDescripcion("a");
             proyectoDto.setEstadoIdm(ProyectoEstado.NO_INICIADO_IDM);
@@ -136,7 +136,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
 
     @When("^Se le intentan modificar algún campo de la tarea con un dato válido$")
     public void modificacionCorrectaDeTarea() throws JsonProcessingException {
-        TareaDto tareaModificada = new TareaDto();
+        TareaRequestDto tareaModificada = new TareaRequestDto();
 
         tareaModificada.setDescripcion("descripcionModificada");
         tareaModificada.setFechaInicio(Date.valueOf("2010-10-10"));
@@ -151,7 +151,7 @@ public class TareaOperacionesSteps extends CucumberBootstrap{
 
     @When("^Se le intentan modificar algún campo de la tarea con un dato inválido$")
     public void modificacionIncorrectaDeTarea() {
-        TareaDto tareaModificada = new TareaDto();
+        TareaRequestDto tareaModificada = new TareaRequestDto();
 
         tareaModificada.setDescripcion(null);
         tareaModificada.setFechaInicio(null);

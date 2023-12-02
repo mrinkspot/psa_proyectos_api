@@ -8,7 +8,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import psa.api_proyectos.application.dtos.ProyectoDto;
+import psa.api_proyectos.application.dtos.ProyectoRequestDto;
 import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.application.exceptions.ProyectoNoEncontradoException;
 import psa.api_proyectos.application.services.ProyectoService;
@@ -24,7 +24,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
 
     @Autowired
     private ProyectoService proyectoService;
-    private ProyectoDto proyectoDto;
+    private ProyectoRequestDto proyectoDto;
     private Long proyectoId;
 
     //this method executes after every scenario
@@ -37,7 +37,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
     @Before
     public void before() {
         log.info(">>> Before scenario!");
-        proyectoDto = new ProyectoDto();
+        proyectoDto = new ProyectoRequestDto();
         proyectoDto.setLiderId(1L);
 
     }
@@ -111,7 +111,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
 
     @When("^Se le intentan modificar algún campo con un dato válido$")
     public void modificacionDeProyecto() throws JsonProcessingException {
-        ProyectoDto proyectoModificadoDto = new ProyectoDto();
+        ProyectoRequestDto proyectoModificadoDto = new ProyectoRequestDto();
 
         proyectoModificadoDto.setNombre("Proyecto modificado");
         proyectoModificadoDto.setDescripcion("descripcionModificada");
@@ -127,7 +127,7 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
 
     @When("^Se le intentan modificar algún campo con un dato inválido$")
     public void modificacionConCamposInvalidos() throws JsonProcessingException{
-        ProyectoDto proyectoModificadoDto = new ProyectoDto();
+        ProyectoRequestDto proyectoModificadoDto = new ProyectoRequestDto();
 
         proyectoModificadoDto.setNombre("");
         proyectoModificadoDto.setDescripcion("");

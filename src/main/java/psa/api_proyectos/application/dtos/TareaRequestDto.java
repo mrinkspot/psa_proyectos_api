@@ -4,15 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.util.ArrayList;
 
 @Getter
 @Setter
-public class ProyectoDto {
-    private String nombre;
+public class TareaRequestDto {
     private String descripcion;
     private Date fechaInicio;
     private Date fechaFin;
     private Long estadoIdm;
-    private Long liderId;
+    private Long colaboradorAsignadoId;
 }

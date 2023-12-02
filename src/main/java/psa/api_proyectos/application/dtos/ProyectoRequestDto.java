@@ -7,10 +7,11 @@ import java.sql.Date;
 
 @Getter
 @Setter
-public class TareaDto {
+public class ProyectoRequestDto {
+    private String nombre;
     private String descripcion;
     private Date fechaInicio;
     private Date fechaFin;
     private Long estadoIdm;
-    private Long colaboradorAsignadoId;
+    private Long liderId;
 }
