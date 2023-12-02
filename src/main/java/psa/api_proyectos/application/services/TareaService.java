@@ -58,8 +58,8 @@ public class TareaService {
         response.descripcion = tarea.descripcion;
         response.fechaInicio = tarea.fechaInicio;
         response.fechaFin = tarea.fechaFin;
-        response.estado = tarea.estado.descripcion;
-        response.colaboradorAsignado = colaboradorService.getColaboradorByLegajo(tarea.colaboradorAsignadoId);
+        response.estado = tarea.estado != null ? tarea.estado.descripcion : null;
+        response.colaboradorAsignado = tarea.colaboradorAsignadoId != 0 ? colaboradorService.getColaboradorByLegajo(tarea.colaboradorAsignadoId) : null;
 
         return response;
     }

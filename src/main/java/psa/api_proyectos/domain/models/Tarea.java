@@ -14,7 +14,7 @@ public class Tarea {
     public String descripcion;
     public Date fechaInicio;
     public Date fechaFin;
-    public long colaboradorAsignadoId;
+    public Long colaboradorAsignadoId;
 
     @ManyToOne
     public Proyecto proyecto;

@@ -198,8 +198,8 @@ public class ProyectoService {
         response.descripcion = proyecto.getDescripcion();
         response.fechaInicio = proyecto.getFechaInicio();
         response.fechaFin = proyecto.getFechaFin();
-        response.estado = proyecto.getEstado().descripcion;
-        response.liderAsignado = colaboradorService.getColaboradorByLegajo(proyecto.getLiderAsignadoId());
+        response.estado = proyecto.getEstado() != null ? proyecto.getEstado().descripcion : null;
+        response.liderAsignado = proyecto.getLiderAsignadoId() != null ? colaboradorService.getColaboradorByLegajo(proyecto.getLiderAsignadoId()) : null;
 
         ArrayList<Tarea> tareas = getTareasByProyectoId(proyecto.getId());
 
