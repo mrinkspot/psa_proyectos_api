@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import psa.api_proyectos.application.dtos.ProyectoRequestDto;
 import psa.api_proyectos.application.dtos.ProyectoResponseDto;
 import psa.api_proyectos.application.dtos.TareaRequestDto;
-import psa.api_proyectos.application.dtos.TareaResponseDto;
 import psa.api_proyectos.application.exceptions.*;
 import psa.api_proyectos.data.repositories.*;
 import psa.api_proyectos.domain.models.*;
@@ -14,7 +13,6 @@ import psa.api_proyectos.domain.models.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
