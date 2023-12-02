@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class TareaResponseDto {
     public long id;
@@ -12,6 +13,5 @@ public class TareaResponseDto {
     public Date fechaFin;
     public String estado;
     public ColaboradorDto colaboradorAsignado;
-    // AGREGAR IDS DE TICKETS
-    // REVISAR QUE CAMPOS DE PROYECTO SE MUESTRAN EN TAREA
+    public ArrayList<Long> ticketIds;
 }

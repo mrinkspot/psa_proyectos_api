@@ -1,10 +1,12 @@
 package psa.api_proyectos.domain.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 // TODO: pensar si hay que agregar algun campo en la relacion
 @Entity
 @Table(name = "TareaTickets")
+@Getter
 public class TareaTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

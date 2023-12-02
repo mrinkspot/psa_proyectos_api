@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import psa.api_proyectos.application.dtos.ProyectoRequestDto;
 import psa.api_proyectos.application.dtos.ProyectoResponseDto;
 import psa.api_proyectos.application.dtos.TareaRequestDto;
+import psa.api_proyectos.application.dtos.TareaTicketRequestDto;
 import psa.api_proyectos.application.exceptions.*;
 import psa.api_proyectos.data.repositories.*;
 import psa.api_proyectos.domain.models.*;
@@ -27,6 +28,8 @@ public class ProyectoService {
     private TareaService tareaService;
     @Autowired
     private ColaboradorService colaboradorService;
+    @Autowired
+    private TareaTicketService tareaTicketService;
 
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
@@ -132,6 +135,18 @@ public class ProyectoService {
 
         tareaRepository.save(nuevaTarea);
 
+        // TODO: pegarle a la API de Soporte para validar existencia de Ticket
+        // TODO: validar existencia de Tarea
+        if (dto.getTicketIds() != null) {
+            for (Long ticketId:
+                    dto.getTicketIds()) {
+                TareaTicketRequestDto tareaTicket = new TareaTicketRequestDto();
+                tareaTicket.tareaId = nuevaTarea.id;
+                tareaTicket.ticketId = ticketId;
+                tareaTicketService.createAsociacionTareaTicket(tareaTicket);
+            }
+        }
+
         return nuevaTarea;
     }
 
@@ -171,6 +186,20 @@ public class ProyectoService {
         tarea.colaboradorAsignadoId = dto.getColaboradorAsignadoId();
 
         tareaRepository.save(tarea);
+
+        // elimino todas las tareatickets persistidas y doy de alta todas las recibidas
+         tareaTicketService.deleteTareaTicketByTareaId(tareaId);
+        // TODO: pegarle a la API de Soporte para validar existencia de Ticket
+        // TODO: validar existencia de Tareas
+        if (dto.getTicketIds() != null) {
+            for (Long ticketId:
+                    dto.getTicketIds()) {
+                TareaTicketRequestDto tareaTicket = new TareaTicketRequestDto();
+                tareaTicket.tareaId = tarea.id;
+                tareaTicket.ticketId = ticketId;
+                tareaTicketService.createAsociacionTareaTicket(tareaTicket);
+        }
+        }
     }
 
     private void mapProyectoDtoToProyecto(Proyecto proyecto, ProyectoRequestDto dto) {

@@ -9,9 +9,11 @@ import psa.api_proyectos.data.repositories.TareaEstadoRepository;
 import psa.api_proyectos.domain.models.Tarea;
 import psa.api_proyectos.data.repositories.TareaRepository;
 import psa.api_proyectos.domain.models.TareaEstado;
+import psa.api_proyectos.domain.models.TareaTicket;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TareaService {
@@ -21,6 +23,8 @@ public class TareaService {
     TareaEstadoRepository tareaEstadoRepository;
     @Autowired
     ColaboradorService colaboradorService;
+    @Autowired
+    TareaTicketService tareaTicketService;
 
     public Tarea saveTarea(Tarea tarea) {
         return tareaRepository.save(tarea);
@@ -35,6 +39,7 @@ public class TareaService {
     }
 
     public void deleteTareaById(Long tareaId) {
+        tareaTicketService.deleteTareaTicketByTareaId(tareaId);
         Tarea tarea = this.getTareaById(tareaId);
         tareaRepository.delete(tarea);
     }
@@ -60,6 +65,12 @@ public class TareaService {
         response.fechaFin = tarea.fechaFin;
         response.estado = tarea.estado != null ? tarea.estado.descripcion : null;
         response.colaboradorAsignado = tarea.colaboradorAsignadoId != 0 ? colaboradorService.getColaboradorByLegajo(tarea.colaboradorAsignadoId) : null;
+
+        // obtengo los TareaTicket asociados a la Tarea actual y me quedo solo con los TicketId
+        response.ticketIds = (ArrayList<Long>) tareaTicketService.getAllTareaTicketByTareaId(tarea.id)
+                .stream()
+                .map(TareaTicket::getTicketId)
+                .collect(Collectors.toList());
 
         return response;
     }
