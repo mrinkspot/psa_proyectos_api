@@ -11,6 +11,7 @@ public class TareaResponseDto {
     public String descripcion;
     public Date fechaInicio;
     public Date fechaFin;
+    public Long estadoIdm;
     public String estado;
     public ColaboradorDto colaboradorAsignado;
     public ArrayList<Long> ticketIds;

@@ -10,6 +10,7 @@ public class ProyectoResponseDto {
     public Date fechaInicio;
     public Date fechaFin;
     public String estado;
+    public Long estadoIdm;
     public ColaboradorDto liderAsignado;
     public ArrayList<TareaResponseDto> tareas;
 }

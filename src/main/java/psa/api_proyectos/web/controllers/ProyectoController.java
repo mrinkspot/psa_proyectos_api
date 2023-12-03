@@ -12,8 +12,11 @@ import psa.api_proyectos.application.dtos.TareaResponseDto;
 import psa.api_proyectos.application.exceptions.*;
 import psa.api_proyectos.application.services.TareaService;
 import psa.api_proyectos.domain.models.Proyecto;
+import psa.api_proyectos.domain.models.ProyectoEstado;
 import psa.api_proyectos.domain.models.Tarea;
 import psa.api_proyectos.application.services.ProyectoService;
+import psa.api_proyectos.domain.models.TareaEstado;
+
 import java.util.ArrayList;
 
 @RestController
@@ -139,5 +142,11 @@ public class ProyectoController {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/estados")
+    public ResponseEntity<?> getProyectoEstados() {
+        ArrayList<ProyectoEstado> proyectoEstados = proyectoService.getAllProyectoEstados();
+        return new ResponseEntity<>(proyectoEstados, HttpStatus.OK);
     }
 }

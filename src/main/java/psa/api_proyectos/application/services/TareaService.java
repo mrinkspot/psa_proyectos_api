@@ -63,6 +63,7 @@ public class TareaService {
         response.descripcion = tarea.descripcion;
         response.fechaInicio = tarea.fechaInicio;
         response.fechaFin = tarea.fechaFin;
+        response.estadoIdm = tarea.estado != null ? tarea.estado.idm : null;
         response.estado = tarea.estado != null ? tarea.estado.descripcion : null;
         response.colaboradorAsignado = tarea.colaboradorAsignadoId != 0 ? colaboradorService.getColaboradorByLegajo(tarea.colaboradorAsignadoId) : null;
 
@@ -73,6 +74,10 @@ public class TareaService {
                 .collect(Collectors.toList());
 
         return response;
+    }
+
+    public ArrayList<TareaEstado> getAllTareaEstados() {
+        return (ArrayList<TareaEstado>) tareaEstadoRepository.findAll();
     }
 
     public ArrayList<TareaResponseDto> mapToResponse(ArrayList<Tarea> tareas) {

@@ -219,6 +219,10 @@ public class ProyectoService {
         proyectoRepository.delete(proyecto);
     }
 
+    public ArrayList<ProyectoEstado> getAllProyectoEstados() {
+        return (ArrayList<ProyectoEstado>) proyectoEstadoRepository.findAll();
+    }
+
     public ProyectoResponseDto mapToResponse(Proyecto proyecto) throws JsonProcessingException {
         ProyectoResponseDto response = new ProyectoResponseDto();
 
@@ -227,6 +231,7 @@ public class ProyectoService {
         response.descripcion = proyecto.getDescripcion();
         response.fechaInicio = proyecto.getFechaInicio();
         response.fechaFin = proyecto.getFechaFin();
+        response.estadoIdm = proyecto.getEstado() != null ? proyecto.getEstado().idm : null;
         response.estado = proyecto.getEstado() != null ? proyecto.getEstado().descripcion : null;
         response.liderAsignado = proyecto.getLiderAsignadoId() != null ? colaboradorService.getColaboradorByLegajo(proyecto.getLiderAsignadoId()) : null;
 
