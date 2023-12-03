@@ -63,7 +63,7 @@ public class ProyectoService {
             errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
         }
 
-        if (dto.getLiderId() == null || !colaboradorService.colaboradorExists(dto.getLiderId())) {
+        if (dto.getLiderId() != null && !colaboradorService.colaboradorExists(dto.getLiderId())) {
             errores.put("liderId", "No existe un 'Lider' con legajo " + dto.getLiderId());
         }
 
