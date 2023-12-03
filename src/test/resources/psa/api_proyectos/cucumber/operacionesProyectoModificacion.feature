@@ -16,3 +16,8 @@ Feature: Operaciones de modificición de proyecto
     When Se le intenta eliminar
     Then El proyecto es eliminado y ya no puede ser obtenido
 
+    Scenario: Eliminacion en cascada de las tareas incluidas en un proyecto cuando este se elimina
+      Given Existe un proyecto y se conoce su Id
+      Given El proyecto tiene tareas
+      When Se le intenta eliminar
+      Then Tambien se eliminan las tareas
