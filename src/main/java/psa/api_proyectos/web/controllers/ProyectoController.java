@@ -144,7 +144,7 @@ public class ProyectoController {
         }
     }
 
-    @GetMapping("/estados")
+    @GetMapping("/estado")
     public ResponseEntity<?> getProyectoEstados() {
         ArrayList<ProyectoEstado> proyectoEstados = proyectoService.getAllProyectoEstados();
         return new ResponseEntity<>(proyectoEstados, HttpStatus.OK);
