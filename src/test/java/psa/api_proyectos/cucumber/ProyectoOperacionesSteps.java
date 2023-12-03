@@ -9,12 +9,19 @@ import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import psa.api_proyectos.application.dtos.ProyectoRequestDto;
+import psa.api_proyectos.application.dtos.TareaRequestDto;
 import psa.api_proyectos.application.exceptions.ProyectoInvalidoException;
 import psa.api_proyectos.application.exceptions.ProyectoNoEncontradoException;
+import psa.api_proyectos.application.exceptions.TareaNoEncontradaException;
 import psa.api_proyectos.application.services.ProyectoService;
+import psa.api_proyectos.application.services.TareaService;
 import psa.api_proyectos.domain.models.Proyecto;
 import psa.api_proyectos.domain.models.ProyectoEstado;
+import psa.api_proyectos.domain.models.Tarea;
+import psa.api_proyectos.domain.models.TareaEstado;
+
 import java.sql.Date;
+import java.util.ArrayList;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,8 +31,11 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
 
     @Autowired
     private ProyectoService proyectoService;
+    @Autowired
+    private TareaService tareaService;
     private ProyectoRequestDto proyectoDto;
     private Long proyectoId;
+    private ArrayList<Long> tareasId;
 
     //this method executes after every scenario
     @After
@@ -52,6 +62,24 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
         proyectoDto.setFechaInicio(Date.valueOf("2012-12-12"));
         proyectoDto.setFechaFin(Date.valueOf("2022-12-12"));
         proyectoId = proyectoService.saveProyecto(proyectoDto).getId();
+    }
+    @Given("^El proyecto tiene tareas$")
+    public void agregadoDeTareasAUnProyecto() throws JsonProcessingException {
+        tareasId = new ArrayList<>();
+        for (int i = 1; i < 4; i++){
+            TareaRequestDto tarea = new TareaRequestDto();
+            tarea.setDescripcion("Tarea " + i);
+            tarea.setEstadoIdm(TareaEstado.NUEVA_IDM);
+            tarea.setFechaInicio(Date.valueOf("2023-05-0" + i));
+            tarea.setFechaFin(Date.valueOf("2030-12-12"));
+            tarea.setColaboradorAsignadoId(1L);
+            tareasId.add(proyectoService.saveTarea(tarea, proyectoId).id);
+        }
+        //Verificamos la creacion correcta
+        for (long i = 1L; i < 4L; i++) {
+            long finalI = i;
+            assertDoesNotThrow( () -> {tareaService.getTareaById(finalI);} );
+        }
     }
 
     @When("^se intenta crear un proyecto con todos los campos asignados correctamente$")
@@ -186,5 +214,13 @@ public class ProyectoOperacionesSteps extends CucumberBootstrap{
     @Then("^El proyecto es eliminado y ya no puede ser obtenido$")
     public void validacionDeProyectoEliminado(){
         assertThrows(ProyectoNoEncontradoException.class, () -> proyectoService.getProyectoById(proyectoId));
+    }
+
+    @Then("^Tambien se eliminan las tareas$")
+    public void verificacionEliminacionDeTarea() {
+        for (long i = 1L; i < tareasId.size() + 1; i++) {
+            long finalI = i;
+            assertThrows(TareaNoEncontradaException.class, () -> tareaService.getTareaById(finalI));
+        }
     }
 }

@@ -1,0 +1,4 @@
+psa\api_proyectos\cucumber\CucumberBootstrap.class
+psa\api_proyectos\cucumber\ProyectosApiIntegrationTest.class
+psa\api_proyectos\cucumber\TareaOperacionesSteps.class
+psa\api_proyectos\cucumber\ProyectoOperacionesSteps.class

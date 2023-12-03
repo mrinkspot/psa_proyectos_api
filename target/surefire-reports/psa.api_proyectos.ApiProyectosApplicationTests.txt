@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: psa.api_proyectos.ApiProyectosApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.198 s - in psa.api_proyectos.ApiProyectosApplicationTests

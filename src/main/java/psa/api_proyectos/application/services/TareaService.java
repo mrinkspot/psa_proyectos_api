@@ -65,7 +65,7 @@ public class TareaService {
         response.fechaFin = tarea.fechaFin;
         response.estadoIdm = tarea.estado != null ? tarea.estado.idm : null;
         response.estado = tarea.estado != null ? tarea.estado.descripcion : null;
-        response.colaboradorAsignado = tarea.colaboradorAsignadoId != 0 ? colaboradorService.getColaboradorByLegajo(tarea.colaboradorAsignadoId) : null;
+        response.colaboradorAsignado = tarea.colaboradorAsignadoId != null  && tarea.colaboradorAsignadoId != 0 ? colaboradorService.getColaboradorByLegajo(tarea.colaboradorAsignadoId) : null;
 
         // obtengo los TareaTicket asociados a la Tarea actual y me quedo solo con los TicketId
         response.ticketIds = (ArrayList<Long>) tareaTicketService.getAllTareaTicketByTareaId(tarea.id)
