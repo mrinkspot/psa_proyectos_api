@@ -1,4 +1,4 @@
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 
 COPY target/api_proyectos-0.0.1-SNAPSHOT.war api_proyectos.war
 
