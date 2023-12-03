@@ -25,6 +25,7 @@ C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api
 C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\application\dtos\ProyectoRequestDto.java
 C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\application\services\ProyectoService.java
 C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\application\dtos\TareaTicketResponseDto.java
+C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\web\controllers\TareaController.java
 C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\application\dtos\TareaTicketRequestDto.java
 C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\domain\models\TareaTicket.java
 C:\Users\franco.patiño\Documents\GitHub\psa_api\api_proyectos\psa_proyectos_api\src\main\java\psa\api_proyectos\web\controllers\ColaboradorController.java
