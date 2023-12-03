@@ -10,7 +10,7 @@ public class Tarea {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
-    public long id;
+    public Long id;
     public String descripcion;
     public Date fechaInicio;
     public Date fechaFin;
