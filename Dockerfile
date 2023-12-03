@@ -1,6 +1,4 @@
-FROM openjdk:17-alpine
-
-WORKDIR /app
+FROM amazoncorretto:17
 
 COPY target/api_proyectos-0.0.1-SNAPSHOT.war api_proyectos.war
 
