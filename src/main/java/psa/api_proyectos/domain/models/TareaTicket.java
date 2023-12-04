@@ -2,6 +2,7 @@ package psa.api_proyectos.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import psa.api_proyectos.application.dtos.TareaResponseDto;
 
 // TODO: pensar si hay que agregar algun campo en la relacion
 @Entity

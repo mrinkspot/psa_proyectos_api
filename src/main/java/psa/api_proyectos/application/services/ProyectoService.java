@@ -34,7 +34,6 @@ public class ProyectoService {
     public ArrayList<Tarea> getTareasByProyectoId(Long proyectoId) {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
     }
-
     public ArrayList<Proyecto> getProyectos() {
         return (ArrayList<Proyecto>) proyectoRepository.findAll();
     }

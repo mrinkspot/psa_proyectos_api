@@ -1,11 +1,15 @@
 package psa.api_proyectos.application.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import psa.api_proyectos.application.dtos.TareaResponseDto;
 import psa.api_proyectos.application.dtos.TareaTicketRequestDto;
 import psa.api_proyectos.application.dtos.TareaTicketResponseDto;
 import psa.api_proyectos.application.exceptions.YaExisteRelacionTareaTicketException;
+import psa.api_proyectos.data.repositories.TareaRepository;
 import psa.api_proyectos.data.repositories.TareaTicketRepository;
+import psa.api_proyectos.domain.models.Tarea;
 import psa.api_proyectos.domain.models.TareaTicket;
 
 import java.util.ArrayList;
@@ -14,6 +18,10 @@ import java.util.ArrayList;
 public class TareaTicketService {
     @Autowired
     TareaTicketRepository tareaTicketRepository;
+//    @Autowired
+//    TareaService tareaService;
+    @Autowired
+    TareaRepository tareaRepository;
 
     // TODO: ver si es necesario validar que exista Tarea y Ticket
     public TareaTicket createAsociacionTareaTicket(TareaTicketRequestDto request) {
@@ -29,8 +37,16 @@ public class TareaTicketService {
 
     // TODO: tendria que hacer tres deletes por id?
 
-    public ArrayList<TareaTicket> getAllTareaTicketByTicketId(long ticketId) {
-        return (ArrayList<TareaTicket>) tareaTicketRepository.findAllByTicketId(ticketId);
+    public ArrayList<TareaTicketResponseDto> getAllTareaTicketByTicketId(long ticketId) throws JsonProcessingException {
+        ArrayList<TareaTicket> tareaTickets = (ArrayList<TareaTicket>) tareaTicketRepository.findAllByTicketId(ticketId);
+        ArrayList<TareaTicketResponseDto> tareaTicketsResponse = new ArrayList<>();
+        for (TareaTicket tareaTicket : tareaTickets) {
+            Tarea tarea = tareaRepository.findById(tareaTicket.tareaId).get();
+            TareaTicketResponseDto tareaTicketDto = this.mapToResponse(tareaTicket);
+            tareaTicketDto.tarea = tarea;
+            tareaTicketsResponse.add(tareaTicketDto);
+        }
+        return tareaTicketsResponse;
     }
 
     public ArrayList<TareaTicket> getAllTareaTicketByTareaId(long tareaId) {
