@@ -38,6 +38,10 @@ public class TareaService {
         return tarea;
     }
 
+    public ArrayList<Tarea> getTareas() {
+        return (ArrayList<Tarea>) tareaRepository.findAll();
+    }
+
     public void deleteTareaById(Long tareaId) {
         tareaTicketService.deleteTareaTicketByTareaId(tareaId);
         Tarea tarea = this.getTareaById(tareaId);
