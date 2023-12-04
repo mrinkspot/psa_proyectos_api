@@ -63,7 +63,7 @@ public class ProyectoService {
             errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
         }
 
-        if (dto.getLiderId() == null || !colaboradorService.colaboradorExists(dto.getLiderId())) {
+        if (dto.getLiderId() != null && !colaboradorService.colaboradorExists(dto.getLiderId())) {
             errores.put("liderId", "No existe un 'Lider' con legajo " + dto.getLiderId());
         }
 
@@ -109,7 +109,7 @@ public class ProyectoService {
             errores.put("fechaInicio", "'Fecha de Inicio' no puede ser posterior a 'Fecha de Fin'");
         }
 
-        if (!colaboradorService.colaboradorExists(dto.getColaboradorAsignadoId())) {
+        if (dto.getColaboradorAsignadoId() != null && !colaboradorService.colaboradorExists(dto.getColaboradorAsignadoId())) {
             errores.put("colaboradorAsignadoId", "No existe un 'Colaborador' con legajo " + dto.getColaboradorAsignadoId());
         }
 
@@ -210,6 +210,7 @@ public class ProyectoService {
         ProyectoEstado estado = this.getProyectoEstadoByIdm(dto.getEstadoIdm());
         proyecto.setEstado(estado);
         if (dto.getLiderId() != null) proyecto.setLiderAsignadoId(dto.getLiderId());
+        else proyecto.setLiderAsignadoId(null);
     }
 
     public void deleteProyectoById(Long proyectoId) {
