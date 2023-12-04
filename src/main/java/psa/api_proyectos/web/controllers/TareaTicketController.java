@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import psa.api_proyectos.application.dtos.TareaTicketRequestDto;
+import psa.api_proyectos.application.dtos.TareaTicketResponseDto;
 import psa.api_proyectos.application.exceptions.ErrorMessage;
 import psa.api_proyectos.application.exceptions.YaExisteRelacionTareaTicketException;
 import psa.api_proyectos.application.services.TareaTicketService;
@@ -27,8 +28,12 @@ public class TareaTicketController {
 
     @GetMapping("/ticket/{ticketId}")
     public ResponseEntity<?> getTareaTicketByTicketId(@PathVariable Long ticketId) {
-        ArrayList<TareaTicket> tareaTickets = tareaTicketService.getAllTareaTicketByTicketId(ticketId);
-        return new ResponseEntity<>(tareaTicketService.mapToResponse(tareaTickets), HttpStatus.OK);
+        try {
+            ArrayList<TareaTicketResponseDto> tareaTickets = tareaTicketService.getAllTareaTicketByTicketId(ticketId);
+            return new ResponseEntity<>(tareaTickets, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ErrorMessage(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping()

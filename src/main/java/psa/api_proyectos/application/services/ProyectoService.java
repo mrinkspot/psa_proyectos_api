@@ -35,6 +35,10 @@ public class ProyectoService {
         return (ArrayList<Tarea>) tareaRepository.findAllByProyecto_Id(proyectoId);
     }
 
+    public ArrayList<Tarea> getTareas() {
+        return (ArrayList<Tarea>) tareaRepository.findAll();
+    }
+
     public ArrayList<Proyecto> getProyectos() {
         return (ArrayList<Proyecto>) proyectoRepository.findAll();
     }
